@@ -102,10 +102,10 @@ export const SAMPLE_CURRENT_HOUSE: CurrentHouseProfile = {
   ],
 
   nearestStations: [
-    { name: 'Oxford Central', distance: 1.8 }
+    { name: 'Oxford Central', distanceMiles: 1.8 }
   ],
   nearestSchools: [
-    { name: 'St Mary & St John Primary', distance: 0.3, ofstedRating: 'Good' }
+    { name: 'St Mary & St John Primary', distanceMiles: 0.3, ofstedRating: 'Good' }
   ],
 
   detectedFeatures: [
