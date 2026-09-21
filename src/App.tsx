@@ -160,89 +160,94 @@ export const App: React.FC = () => {
                 {comparisonSummary && <VerdictPanel summary={comparisonSummary} />}
 
                 {/* 2. Deep-Dive Section Navigation Tabs */}
-                <div className="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-850 rounded-2xl p-1.5 shadow-sm overflow-x-auto">
-                  <div className="flex space-x-1 min-w-max">
+                <div className="bg-slate-200/60 dark:bg-slate-800/70 p-1.5 rounded-2xl border border-slate-300/50 dark:border-slate-700/60 shadow-inner overflow-x-auto">
+                  <div className="flex space-x-1.5 min-w-max">
                     <button
                       onClick={() => setActiveTab('table')}
-                      className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition ${
+                      className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs transition-all active:scale-[0.98] ${
                         activeTab === 'table'
-                          ? 'bg-brand-600 text-white shadow-sm'
-                          : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                          ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm font-bold ring-1 ring-black/5 dark:ring-white/10'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-750 font-medium'
                       }`}
                     >
-                      <Table className="w-3.5 h-3.5" />
-                      <span>Side-by-Side</span>
+                      <Table className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400" />
+                      <span>Overview & Specs</span>
                     </button>
 
                     <button
                       onClick={() => setActiveTab('space')}
-                      className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition ${
+                      className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs transition-all active:scale-[0.98] ${
                         activeTab === 'space'
-                          ? 'bg-brand-600 text-white shadow-sm'
-                          : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                          ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm font-bold ring-1 ring-black/5 dark:ring-white/10'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-750 font-medium'
                       }`}
                     >
-                      <Maximize2 className="w-3.5 h-3.5" />
+                      <Maximize2 className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400" />
                       <span>Space & Floorplans</span>
                     </button>
 
                     <button
                       onClick={() => setActiveTab('scorecard')}
-                      className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition ${
+                      className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs transition-all active:scale-[0.98] ${
                         activeTab === 'scorecard'
-                          ? 'bg-brand-600 text-white shadow-sm'
-                          : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                          ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm font-bold ring-1 ring-black/5 dark:ring-white/10'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-750 font-medium'
                       }`}
                     >
-                      <CheckSquare className="w-3.5 h-3.5" />
+                      <CheckSquare className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400" />
                       <span>Wants Scorecard</span>
+                      {comparisonSummary && (
+                        <span className="px-1.5 py-0.2 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 text-[10px] font-bold">
+                          {comparisonSummary.fitScore.mustHavesMetCount}/{comparisonSummary.fitScore.mustHavesTotalCount}
+                        </span>
+                      )}
                     </button>
 
                     <button
                       onClick={() => setActiveTab('money')}
-                      className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition ${
+                      className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs transition-all active:scale-[0.98] ${
                         activeTab === 'money'
-                          ? 'bg-brand-600 text-white shadow-sm'
-                          : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                          ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm font-bold ring-1 ring-black/5 dark:ring-white/10'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-750 font-medium'
                       }`}
                     >
-                      <PoundSterling className="w-3.5 h-3.5" />
+                      <PoundSterling className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400" />
                       <span>Money & SDLT</span>
                     </button>
 
                     <button
                       onClick={() => setActiveTab('location')}
-                      className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition ${
+                      className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs transition-all active:scale-[0.98] ${
                         activeTab === 'location'
-                          ? 'bg-brand-600 text-white shadow-sm'
-                          : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                          ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm font-bold ring-1 ring-black/5 dark:ring-white/10'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-750 font-medium'
                       }`}
                     >
-                      <MapPin className="w-3.5 h-3.5" />
+                      <MapPin className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400" />
                       <span>Location & Commute</span>
                     </button>
 
                     <button
                       onClick={() => setActiveTab('running')}
-                      className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition ${
+                      className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs transition-all active:scale-[0.98] ${
                         activeTab === 'running'
-                          ? 'bg-brand-600 text-white shadow-sm'
-                          : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                          ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm font-bold ring-1 ring-black/5 dark:ring-white/10'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-750 font-medium'
                       }`}
                     >
-                      <Flame className="w-3.5 h-3.5" />
-                      <span>Running Costs & Agent Questions</span>
+                      <Flame className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400" />
+                      <span>Running Costs</span>
                     </button>
 
                     <button
                       onClick={() => setActiveTab('flags')}
-                      className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition ${
+                      className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs transition-all active:scale-[0.98] ${
                         activeTab === 'flags'
-                          ? 'bg-brand-600 text-white shadow-sm'
-                          : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                          ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm font-bold ring-1 ring-black/5 dark:ring-white/10'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-750 font-medium'
                       }`}
                     >
-                      <Flag className="w-3.5 h-3.5" />
+                      <Flag className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400" />
                       <span>Red & Green Flags</span>
                     </button>
                   </div>
