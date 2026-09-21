@@ -1,0 +1,70 @@
+{
+  "propertyData": {
+    "id": "14829103",
+    "displayAddress": "8 Alderbrook Road, Solihull, B91 1NX",
+    "address": {
+      "displayAddress": "8 Alderbrook Road, Solihull, B91 1NX",
+      "postcode": "B91 1NX",
+      "latitude": 52.4112,
+      "longitude": -1.7765
+    },
+    "prices": {
+      "primaryPrice": "£725,000",
+      "displayPriceQualifier": "Offers in Region of"
+    },
+    "bedrooms": 4,
+    "bathrooms": 3,
+    "receptions": 3,
+    "propertySubType": "Detached",
+    "tenure": {
+      "tenureType": "FREEHOLD",
+      "yearsRemainingOnLease": null
+    },
+    "councilTax": {
+      "councilTaxBand": "G",
+      "annualAmount": 3150
+    },
+    "energyPerformance": {
+      "epcRating": "C",
+      "currentEnergyRating": 74,
+      "potentialEnergyRating": 84
+    },
+    "sizing": {
+      "maximumSizeSqFt": 2150,
+      "displaySize": "2,150 sq ft"
+    },
+    "keyFeatures": [
+      "Substantial 4-bedroom executive detached family residence",
+      "Dormer loft conversion with full building regulations approval as master suite",
+      "Double integral garage with automated doors",
+      "Driveway for 4 cars with 7kW EV charger installed",
+      "Dedicated study / home office and separate utility room",
+      "South-west facing landscaped garden with composite decking and garden room",
+      "Rooftop solar panels installed"
+    ],
+    "text": {
+      "description": "An outstanding four bedroom detached family residence positioned in a prime Solihull avenue. The ground floor features an expansive hall, front lounge, separate study / home office, open-plan kitchen breakfast room with island, utility room with garden access, and guest downstairs WC. Internal door leads to a double integral garage. The second floor features a luxury dormer loft conversion with full building regulations approval, boasting a bespoke dressing area and private en-suite bathroom. Outside, a wide in-out driveway provides parking for 4 vehicles equipped with a 7kW EV charger. The rear garden is south-west facing with a composite deck, lawn, and an insulated garden office with power and light. Eco features include a solar PV array."
+    },
+    "images": [
+      { "url": "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1000", "caption": "Front View" },
+      { "url": "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?w=1000", "caption": "Open Plan Kitchen" }
+    ],
+    "floorplans": [
+      { "url": "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=1000", "caption": "Floorplan" }
+    ],
+    "nearestStations": [
+      { "name": "Solihull Station", "distance": 0.6, "types": ["national_rail"] }
+    ],
+    "nearestSchools": [
+      { "name": "Tudor Grange Academy", "distance": 0.5, "ofstedRating": "Outstanding" }
+    ],
+    "customer": {
+      "branchDisplayName": "John Shepherd - Solihull",
+      "contactTelephone": "0121 703 1850"
+    },
+    "listingHistory": {
+      "listingUpdateReason": "New listing",
+      "firstVisibleDate": "2024-08-20T11:30:00Z"
+    }
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "propertyData": {
+    "id": "14829101",
+    "displayAddress": "14 Church Lane, Headington, Oxford, OX3 9HQ",
+    "address": {
+      "displayAddress": "14 Church Lane, Headington, Oxford, OX3 9HQ",
+      "postcode": "OX3 9HQ",
+      "latitude": 51.7612,
+      "longitude": -1.2145
+    },
+    "prices": {
+      "primaryPrice": "£475,000",
+      "displayPriceQualifier": "Guide Price"
+    },
+    "bedrooms": 3,
+    "bathrooms": 1,
+    "receptions": 2,
+    "propertySubType": "Semi-Detached",
+    "tenure": {
+      "tenureType": "FREEHOLD",
+      "yearsRemainingOnLease": null
+    },
+    "councilTax": {
+      "councilTaxBand": "D",
+      "annualAmount": 2240
+    },
+    "energyPerformance": {
+      "epcRating": "D",
+      "currentEnergyRating": 64,
+      "potentialEnergyRating": 82
+    },
+    "sizing": {
+      "maximumSizeSqFt": 1050,
+      "displaySize": "1,050 sq ft"
+    },
+    "keyFeatures": [
+      "Character 3-bedroom Victorian semi-detached home",
+      "Sunny south-facing enclosed rear garden with paved patio",
+      "Driveway parking for 2 cars",
+      "Spacious open-plan kitchen diner with French doors",
+      "Boarded loft with pull-down ladder and electric light",
+      "Convenient downstairs guest WC",
+      "Offered with no onward chain"
+    ],
+    "text": {
+      "description": "A charming and characterful Victorian three bedroom semi-detached house located in the highly desirable Headington area. The ground floor comprises a front reception room with original bay window and feature fireplace, leading to a generous open-plan kitchen diner with garden views, plus a convenient downstairs WC and cloakroom. On the first floor are three well-proportioned bedrooms and a contemporary family bathroom. There is a boarded loft with pull-down ladder and light, providing superb storage or conversion potential subject to consents. Outside boasts a block-paved driveway providing off-street parking for 2 vehicles, and an attractive south-facing rear garden with stone patio and lawn. The property is offered chain-free with no onward chain."
+    },
+    "images": [
+      { "url": "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=1000", "caption": "Front Elevation" },
+      { "url": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1000", "caption": "Kitchen Diner" },
+      { "url": "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=1000", "caption": "South Facing Garden" }
+    ],
+    "floorplans": [
+      { "url": "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=1000", "caption": "Floorplan" }
+    ],
+    "nearestStations": [
+      { "name": "Oxford Central Station", "distance": 2.4, "types": ["national_rail"] },
+      { "name": "Oxford Parkway", "distance": 3.8, "types": ["national_rail"] }
+    ],
+    "nearestSchools": [
+      { "name": "St Ebbe's Primary School", "distance": 0.4, "ofstedRating": "Good" },
+      { "name": "Headington Secondary School", "distance": 0.6, "ofstedRating": "Outstanding" }
+    ],
+    "customer": {
+      "branchDisplayName": "Breckon & Breckon - Oxford",
+      "contactTelephone": "01865 244735"
+    },
+    "listingHistory": {
+      "listingUpdateReason": "New listing",
+      "firstVisibleDate": "2024-09-01T10:00:00Z"
+    }
+  }
+}

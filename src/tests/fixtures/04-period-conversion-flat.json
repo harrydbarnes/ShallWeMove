@@ -1,0 +1,69 @@
+{
+  "propertyData": {
+    "id": "14829104",
+    "displayAddress": "Flat 2, 42 Arlington Road, Camden, London, NW1 7ET",
+    "address": {
+      "displayAddress": "Flat 2, 42 Arlington Road, Camden, London, NW1 7ET",
+      "postcode": "NW1 7ET",
+      "latitude": 51.5385,
+      "longitude": -0.1425
+    },
+    "prices": {
+      "primaryPrice": "£495,000",
+      "displayPriceQualifier": "Guide Price"
+    },
+    "bedrooms": 1,
+    "bathrooms": 1,
+    "receptions": 1,
+    "propertySubType": "Flat",
+    "tenure": {
+      "tenureType": "SHARE_OF_FREEHOLD",
+      "yearsRemainingOnLease": 999
+    },
+    "councilTax": {
+      "councilTaxBand": "D",
+      "annualAmount": 1820
+    },
+    "energyPerformance": {
+      "epcRating": "E",
+      "currentEnergyRating": 51,
+      "potentialEnergyRating": 68
+    },
+    "sizing": {
+      "maximumSizeSqFt": 510,
+      "displaySize": "510 sq ft"
+    },
+    "keyFeatures": [
+      "One bedroom Victorian conversion flat in prime Camden",
+      "Share of Freehold with underlying 999 year lease",
+      "High ceilings and original sash windows",
+      "In need of complete modernisation and refurbishment",
+      "Short walk to Camden Town Underground and Regent's Canal",
+      "No onward chain"
+    ],
+    "text": {
+      "description": "Brought to the market chain free, this first-floor one bedroom apartment is set within an imposing Victorian conversion on Arlington Road. The property is in need of complete modernisation and refurbishment throughout, offering tremendous potential for an incoming buyer to create a bespoke London home. Accommodation includes a high-ceilinged reception with tall sash windows, a separate basic kitchen requiring updating, double bedroom, and three-piece bathroom. The property benefits from a Share of Freehold with a 999-year lease and peppercorn ground rent. On-street resident permit parking is available through Camden Council. Chain free."
+    },
+    "images": [
+      { "url": "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1000", "caption": "Reception Room" }
+    ],
+    "floorplans": [
+      { "url": "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=1000", "caption": "Floorplan" }
+    ],
+    "nearestStations": [
+      { "name": "Camden Town", "distance": 0.2, "types": ["london_underground"] },
+      { "name": "Camden Road", "distance": 0.4, "types": ["overground"] }
+    ],
+    "nearestSchools": [
+      { "name": "Hawley Primary School", "distance": 0.3, "ofstedRating": "Good" }
+    ],
+    "customer": {
+      "branchDisplayName": "Dexters - Camden",
+      "contactTelephone": "020 7483 6390"
+    },
+    "listingHistory": {
+      "listingUpdateReason": "New listing",
+      "firstVisibleDate": "2024-07-10T14:00:00Z"
+    }
+  }
+}

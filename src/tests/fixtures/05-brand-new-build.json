@@ -1,0 +1,70 @@
+{
+  "propertyData": {
+    "id": "14829105",
+    "displayAddress": "Plot 42, The Woodlands, Brooklands, Milton Keynes, MK10 7FB",
+    "address": {
+      "displayAddress": "Plot 42, The Woodlands, Brooklands, Milton Keynes, MK10 7FB",
+      "postcode": "MK10 7FB",
+      "latitude": 52.0421,
+      "longitude": -0.6915
+    },
+    "prices": {
+      "primaryPrice": "£395,000",
+      "displayPriceQualifier": "Fixed Price"
+    },
+    "bedrooms": 3,
+    "bathrooms": 2,
+    "receptions": 1,
+    "propertySubType": "End of Terrace",
+    "tenure": {
+      "tenureType": "FREEHOLD",
+      "yearsRemainingOnLease": null
+    },
+    "councilTax": {
+      "councilTaxBand": "D",
+      "annualAmount": 2100
+    },
+    "energyPerformance": {
+      "epcRating": "A",
+      "currentEnergyRating": 94,
+      "potentialEnergyRating": 96
+    },
+    "sizing": {
+      "maximumSizeSqFt": 1120,
+      "displaySize": "1,120 sq ft"
+    },
+    "keyFeatures": [
+      "Brand new 3-bedroom high-specification eco home",
+      "Top energy efficiency rating EPC Band A",
+      "Daikin air source heat pump & wet underfloor heating",
+      "Rooftop solar panels and dedicated EV car charger",
+      "Driveway parking for 2 cars",
+      "10-year NHBC structural warranty",
+      "Master en-suite, utility cupboard, and guest cloakroom"
+    ],
+    "text": {
+      "description": "Ready for immediate occupation, Plot 42 'The Birch' is a cutting-edge 3 bedroom end-of-terrace home constructed to outstanding ecological standards with an enviable EPC Band A rating. Heating is delivered via an ultra-quiet Daikin air source heat pump with wet underfloor heating throughout the ground floor, complemented by an integrated solar PV array. The ground floor showcases an open-plan kitchen diner with quartz worktops and Siemens appliances, a bright reception room with French doors to the private enclosed lawned garden, plus a downstairs cloakroom/WC. The first floor offers three bedrooms, including master bedroom with en-suite shower room and a luxury family bathroom. Outside features a driveway with parking for 2 cars and a 7kW EV charging point. Covered by a 10-year NHBC warranty. Chain free."
+    },
+    "images": [
+      { "url": "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=1000", "caption": "Show Home Exterior" },
+      { "url": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1000", "caption": "Kitchen Diner" }
+    ],
+    "floorplans": [
+      { "url": "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=1000", "caption": "Floorplan" }
+    ],
+    "nearestStations": [
+      { "name": "Milton Keynes Central", "distance": 3.2, "types": ["national_rail"] }
+    ],
+    "nearestSchools": [
+      { "name": "Brooklands Farm Primary School", "distance": 0.3, "ofstedRating": "Outstanding" }
+    ],
+    "customer": {
+      "branchDisplayName": "Cala Homes - The Woodlands",
+      "contactTelephone": "01908 610920"
+    },
+    "listingHistory": {
+      "listingUpdateReason": "New build release",
+      "firstVisibleDate": "2024-09-10T08:00:00Z"
+    }
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "propertyData": {
+    "id": "14829102",
+    "displayAddress": "Apartment 18, Quay Point, Harbourside, Bristol, BS1 5TY",
+    "address": {
+      "displayAddress": "Apartment 18, Quay Point, Harbourside, Bristol, BS1 5TY",
+      "postcode": "BS1 5TY",
+      "latitude": 51.4485,
+      "longitude": -2.6012
+    },
+    "prices": {
+      "primaryPrice": "£325,000",
+      "displayPriceQualifier": ""
+    },
+    "bedrooms": 2,
+    "bathrooms": 2,
+    "receptions": 1,
+    "propertySubType": "Flat",
+    "tenure": {
+      "tenureType": "LEASEHOLD",
+      "yearsRemainingOnLease": 112
+    },
+    "councilTax": {
+      "councilTaxBand": "C",
+      "annualAmount": 1950
+    },
+    "energyPerformance": {
+      "epcRating": "B",
+      "currentEnergyRating": 84,
+      "potentialEnergyRating": 86
+    },
+    "sizing": {
+      "maximumSizeSqFt": 740,
+      "displaySize": "740 sq ft"
+    },
+    "keyFeatures": [
+      "Modern 2 double bedroom 4th floor waterfront apartment",
+      "Private balcony with marina water views",
+      "Master bedroom with private en-suite shower room",
+      "Allocated underground secure parking space",
+      "High EPC rating B for energy efficiency",
+      "Passenger lift service to all floors"
+    ],
+    "text": {
+      "description": "Situated in the landmark Quay Point development on Bristol's vibrant Floating Harbour, this bright two bedroom apartment enjoys exceptional water views from a private decked balcony. Accommodation comprises an entrance hall with utility storage cupboard, an open-plan kitchen and living room with floor-to-ceiling glazing, master bedroom with en-suite shower room, a second double bedroom, and a stylish family bathroom. Includes one allocated underground parking space behind electronic security gates. The property has 112 years remaining on the lease. Annual service charge is £3,200 with ground rent of £350 per annum. Communal grounds only (no private garden)."
+    },
+    "images": [
+      { "url": "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1000", "caption": "Balcony Harbour Views" },
+      { "url": "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1000", "caption": "Living Area" }
+    ],
+    "floorplans": [
+      { "url": "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=1000", "caption": "Floorplan" }
+    ],
+    "nearestStations": [
+      { "name": "Bristol Temple Meads", "distance": 0.8, "types": ["national_rail"] },
+      { "name": "Clifton Down", "distance": 1.5, "types": ["national_rail"] }
+    ],
+    "nearestSchools": [
+      { "name": "Cathedral Primary School", "distance": 0.2, "ofstedRating": "Outstanding" }
+    ],
+    "customer": {
+      "branchDisplayName": "Ocean - Clifton & Harbourside",
+      "contactTelephone": "0117 946 6007"
+    },
+    "listingHistory": {
+      "listingUpdateReason": "Price reduced on 15/08/2024",
+      "firstVisibleDate": "2024-06-12T09:15:00Z"
+    }
+  }
+}
