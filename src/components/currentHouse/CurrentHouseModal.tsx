@@ -8,10 +8,14 @@ import {
   Plus,
   Trash2,
   Check,
+  Sparkles,
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { CurrentHouseProfile } from '../../types/property';
 import { generateAutoSuggestions } from '../../lib/scoring/autoSuggestions';
+import { AddressSearchInput } from '../address/AddressSearchInput';
+import { Tooltip } from '../ui/Tooltip';
+import { CurrentHouseRightmoveImport } from './CurrentHouseRightmoveImport';
 
 interface CurrentHouseModalProps {
   isOpen: boolean;
@@ -62,6 +66,30 @@ export const CurrentHouseModal: React.FC<CurrentHouseModalProps> = ({ isOpen, on
   // Likes & Frustrations
   const [likesText, setLikesText] = useState(activeCurrentHouse.thingsWeLove.join('\n'));
   const [frustrationsText, setFrustrationsText] = useState(activeCurrentHouse.frustrations.join('\n'));
+  const [showRightmoveImport, setShowRightmoveImport] = useState(false);
+
+  const handleImportRightmove = (imported: Partial<CurrentHouseProfile>) => {
+    if (imported.displayAddress) setAddress(imported.displayAddress);
+    if (imported.postcode) setPostcode(imported.postcode);
+    if (imported.propertyType) setPropertyType(imported.propertyType);
+    if (imported.tenure) setTenure(imported.tenure);
+    if (imported.bedrooms !== undefined) setBedrooms(imported.bedrooms);
+    if (imported.bathrooms !== undefined) setBathrooms(imported.bathrooms);
+    if (imported.receptions !== undefined) setReceptions(imported.receptions);
+    if (imported.floorAreaSqFt !== undefined) setFloorAreaSqFt(imported.floorAreaSqFt);
+    if (imported.parkingSpaces !== undefined) setParkingSpaces(imported.parkingSpaces);
+    if (imported.garageType) setGarageType(imported.garageType);
+    if (imported.gardenOrientation) setGardenOrientation(imported.gardenOrientation);
+    if (imported.hasGarden !== undefined) setHasGarden(imported.hasGarden);
+    if (imported.loftStatus) setLoftStatus(imported.loftStatus);
+    if (imported.councilTaxBand) setCouncilTaxBand(imported.councilTaxBand);
+    if (imported.epcRating) setEpcRating(imported.epcRating);
+    if (imported.estimatedCurrentValue !== undefined) setEstimatedValue(imported.estimatedCurrentValue);
+    if (imported.thingsWeLove && imported.thingsWeLove.length > 0) {
+      setLikesText(imported.thingsWeLove.join('\n'));
+    }
+    setShowRightmoveImport(false);
+  };
 
   if (!isOpen) return null;
 
@@ -186,30 +214,58 @@ export const CurrentHouseModal: React.FC<CurrentHouseModalProps> = ({ isOpen, on
         {/* Content */}
         <div className="p-6 overflow-y-auto flex-1 space-y-4">
           {activeSubTab === 'details' && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-xs">
-              <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                  Profile Nickname
-                </label>
-                <input
-                  type="text"
-                  value={profileName}
-                  onChange={(e) => setProfileName(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
-                />
+            <div className="space-y-4">
+              <div className="flex items-center justify-between pb-1 border-b border-slate-100 dark:border-slate-800">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Search address or import specs directly from a Rightmove listing
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setShowRightmoveImport((prev) => !prev)}
+                  className="inline-flex items-center space-x-1.5 text-xs font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700 bg-brand-50 dark:bg-brand-950/40 px-2.5 py-1.5 rounded-lg border border-brand-200 dark:border-brand-800 transition"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>{showRightmoveImport ? 'Hide Rightmove Import' : 'Import from Rightmove'}</span>
+                </button>
               </div>
 
-              <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                  Address
-                </label>
-                <input
-                  type="text"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+              {showRightmoveImport && (
+                <CurrentHouseRightmoveImport
+                  onImport={handleImportRightmove}
+                  onCancel={() => setShowRightmoveImport(false)}
                 />
-              </div>
+              )}
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-xs">
+                <div>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    Profile Nickname
+                  </label>
+                  <input
+                    type="text"
+                    value={profileName}
+                    onChange={(e) => setProfileName(e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+                  />
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block font-semibold text-slate-700 dark:text-slate-300">
+                      Address
+                    </label>
+                    <span className="text-[10px] text-slate-400">Type to search UK addresses</span>
+                  </div>
+                  <AddressSearchInput
+                    value={address}
+                    onChange={setAddress}
+                    onSelectAddress={(s) => {
+                      setAddress(s.displayName);
+                      if (s.postcode) setPostcode(s.postcode);
+                    }}
+                    placeholder="Search address or postcode..."
+                  />
+                </div>
 
               <div>
                 <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
@@ -331,6 +387,7 @@ export const CurrentHouseModal: React.FC<CurrentHouseModalProps> = ({ isOpen, on
                 </select>
               </div>
             </div>
+          </div>
           )}
 
           {activeSubTab === 'finances' && (
@@ -350,9 +407,24 @@ export const CurrentHouseModal: React.FC<CurrentHouseModalProps> = ({ isOpen, on
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                    Outstanding Mortgage Balance (£)
-                  </label>
+                  <div className="flex items-center space-x-1.5 mb-1">
+                    <label className="block font-semibold text-slate-700 dark:text-slate-300">
+                      Outstanding Mortgage Balance (£)
+                    </label>
+                    <Tooltip
+                      content={
+                        <div className="space-y-1.5 text-[11px] text-slate-200">
+                          <p className="font-bold text-amber-300">What should you include?</p>
+                          <p>
+                            Enter your total redemption figure: your current principal balance <strong>plus any Early Repayment Charge (ERC)</strong>, discharge/exit administration fees, and accrued daily interest.
+                          </p>
+                          <p className="text-slate-300">
+                            💡 If you are unsure, request an official <strong>redemption statement</strong> from your mortgage lender for the exact payoff balance.
+                          </p>
+                        </div>
+                      }
+                    />
+                  </div>
                   <input
                     type="number"
                     step="5000"

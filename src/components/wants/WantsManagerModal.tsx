@@ -12,6 +12,7 @@ import {
 import { useApp } from '../../context/AppContext';
 import { WantCriterion, WantImportance, WantGroup } from '../../types/wants';
 import { generateAutoSuggestions } from '../../lib/scoring/autoSuggestions';
+import { ImportancePillGroup } from './ImportancePillGroup';
 
 interface WantsManagerModalProps {
   isOpen: boolean;
@@ -217,30 +218,16 @@ export const WantsManagerModal: React.FC<WantsManagerModalProps> = ({ isOpen, on
                 </div>
 
                 <div className="flex items-center space-x-2 flex-shrink-0">
-                  <select
+                  <ImportancePillGroup
                     value={want.importance}
-                    onChange={(e) =>
+                    onChange={(newImportance) =>
                       updateWant({
                         ...want,
-                        importance: e.target.value as any,
+                        importance: newImportance,
                       })
                     }
-                    className={`font-semibold py-1 px-2.5 rounded-lg text-xs border transition ${
-                      want.importance === 'deal_breaker'
-                        ? 'bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 border-rose-300 dark:border-rose-800'
-                        : want.importance === 'must_have'
-                        ? 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800'
-                        : want.importance === 'important'
-                        ? 'bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-800'
-                        : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-600'
-                    }`}
-                  >
-                    <option value="deal_breaker">🚨 Deal breaker</option>
-                    <option value="must_have">⭐ Must have (5x)</option>
-                    <option value="important">👍 Important (3x)</option>
-                    <option value="nice_to_have">✨ Nice to have (1x)</option>
-                    <option value="dont_care">⚪ Don't care (0x)</option>
-                  </select>
+                    compact={true}
+                  />
 
                   <button
                     onClick={() => deleteWant(want.id)}
@@ -264,11 +251,14 @@ export const WantsManagerModal: React.FC<WantsManagerModalProps> = ({ isOpen, on
               <span>Add Custom Requirement</span>
             </h4>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-              <div className="sm:col-span-2">
+            <div className="space-y-2.5">
+              <div>
+                <label className="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Requirement Title
+                </label>
                 <input
                   type="text"
-                  placeholder="Requirement title (e.g. Underfloor heating, Cul-de-sac, Within 10m walk to park)"
+                  placeholder="e.g. Underfloor heating, Cul-de-sac, Within 10m walk to park"
                   value={customTitle}
                   onChange={(e) => setCustomTitle(e.target.value)}
                   className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
@@ -276,22 +266,23 @@ export const WantsManagerModal: React.FC<WantsManagerModalProps> = ({ isOpen, on
               </div>
 
               <div>
-                <select
+                <label className="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Importance Level
+                </label>
+                <ImportancePillGroup
                   value={customImportance}
-                  onChange={(e) => setCustomImportance(e.target.value as any)}
-                  className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
-                >
-                  <option value="deal_breaker">Deal breaker</option>
-                  <option value="must_have">Must have</option>
-                  <option value="important">Important</option>
-                  <option value="nice_to_have">Nice to have</option>
-                </select>
+                  onChange={setCustomImportance}
+                  compact={false}
+                />
               </div>
 
-              <div className="sm:col-span-3">
+              <div>
+                <label className="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Description Keywords (Optional)
+                </label>
                 <input
                   type="text"
-                  placeholder="Optional keywords to search for in listing description (comma separated, e.g. underfloor, under-floor, heated floors)"
+                  placeholder="Comma-separated keywords to search for in description (e.g. underfloor, under-floor, heated floors)"
                   value={customKeywords}
                   onChange={(e) => setCustomKeywords(e.target.value)}
                   className="w-full px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-[11px]"

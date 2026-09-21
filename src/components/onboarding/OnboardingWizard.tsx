@@ -9,10 +9,16 @@ import {
   AlertTriangle,
   FileText,
   Bookmark,
+  Building,
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { generateAutoSuggestions } from '../../lib/scoring/autoSuggestions';
 import { parseListingInput } from '../../lib/parser/index';
+import { CurrentHouseProfile } from '../../types/property';
+import { AddressSearchInput } from '../address/AddressSearchInput';
+import { Tooltip } from '../ui/Tooltip';
+import { ImportancePillGroup } from '../wants/ImportancePillGroup';
+import { CurrentHouseRightmoveImport } from '../currentHouse/CurrentHouseRightmoveImport';
 
 interface OnboardingWizardProps {
   onClose: () => void;
@@ -45,6 +51,15 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
   const [frustrationsText, setFrustrationsText] = useState(
     activeCurrentHouse.frustrations.join('\n')
   );
+  const [showRightmoveImport, setShowRightmoveImport] = useState(false);
+
+  const handleImportRightmove = (imported: Partial<CurrentHouseProfile>) => {
+    if (imported.displayAddress) setAddress(imported.displayAddress);
+    if (imported.bedrooms !== undefined) setBeds(imported.bedrooms);
+    if (imported.bathrooms !== undefined) setBaths(imported.bathrooms);
+    if (imported.estimatedCurrentValue !== undefined) setCurrentValue(imported.estimatedCurrentValue);
+    setShowRightmoveImport(false);
+  };
 
   const handleSaveStep1 = () => {
     const updated = {
@@ -124,22 +139,41 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                 <h3 className="text-xl font-bold text-slate-900 dark:text-white">
                   Tell us about your current home
                 </h3>
-                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-                  Shall We Move? uses this as your baseline. It never saves to the cloud and is editable at any time.
-                </p>
+                <div className="flex items-center justify-between pb-1 mt-1">
+                  <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+                    Shall We Move? uses this as your baseline. It never saves to the cloud and is editable at any time.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setShowRightmoveImport((prev) => !prev)}
+                    className="inline-flex items-center space-x-1.5 text-xs font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 bg-brand-50 dark:bg-brand-950/40 px-2.5 py-1.5 rounded-lg border border-brand-200 dark:border-brand-800 transition flex-shrink-0"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>{showRightmoveImport ? 'Hide Rightmove Import' : 'Import from Rightmove'}</span>
+                  </button>
+                </div>
               </div>
+
+              {showRightmoveImport && (
+                <CurrentHouseRightmoveImport
+                  onImport={handleImportRightmove}
+                  onCancel={() => setShowRightmoveImport(false)}
+                />
+              )}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="sm:col-span-2">
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                    Current Address or Nickname
-                  </label>
-                  <input
-                    type="text"
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+                      Current Address or Nickname
+                    </label>
+                    <span className="text-[10px] text-slate-400">Type to search UK addresses</span>
+                  </div>
+                  <AddressSearchInput
                     value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                    className="w-full text-xs sm:text-sm px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500"
-                    placeholder="e.g. 28 Stanley Road, Oxford"
+                    onChange={setAddress}
+                    onSelectAddress={(s) => setAddress(s.displayName)}
+                    placeholder="Search address or postcode (e.g. 28 Stanley Road, Oxford or OX4 1QZ)"
                   />
                 </div>
 
@@ -185,9 +219,24 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                    Outstanding Mortgage (£)
-                  </label>
+                  <div className="flex items-center space-x-1.5 mb-1">
+                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+                      Outstanding Mortgage (£)
+                    </label>
+                    <Tooltip
+                      content={
+                        <div className="space-y-1.5 text-[11px] text-slate-200">
+                          <p className="font-bold text-amber-300">What should you include?</p>
+                          <p>
+                            Enter your total redemption figure: your current principal balance <strong>plus any Early Repayment Charge (ERC)</strong>, discharge/exit administration fees, and accrued daily interest.
+                          </p>
+                          <p className="text-slate-300">
+                            💡 If you are unsure, request a <strong>redemption statement</strong> from your mortgage provider for the exact payoff amount.
+                          </p>
+                        </div>
+                      }
+                    />
+                  </div>
                   <input
                     type="number"
                     step="5000"
@@ -242,9 +291,9 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                 {wants.slice(0, 6).map((want) => (
                   <div
                     key={want.id}
-                    className="p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40 flex items-center justify-between text-xs"
+                    className="p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs"
                   >
-                    <div>
+                    <div className="flex-1 pr-2">
                       <h4 className="font-semibold text-slate-800 dark:text-slate-200">{want.title}</h4>
                       {want.description && (
                         <p className="text-slate-500 dark:text-slate-400 text-[11px] mt-0.5">
@@ -252,28 +301,16 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                         </p>
                       )}
                     </div>
-                    <select
+                    <ImportancePillGroup
                       value={want.importance}
-                      onChange={(e) =>
+                      onChange={(newImportance) =>
                         updateWant({
                           ...want,
-                          importance: e.target.value as any,
+                          importance: newImportance,
                         })
                       }
-                      className={`font-semibold py-1 px-2 rounded-lg text-xs border ${
-                        want.importance === 'deal_breaker'
-                          ? 'bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 border-rose-300 dark:border-rose-800'
-                          : want.importance === 'must_have'
-                          ? 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800'
-                          : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-600'
-                      }`}
-                    >
-                      <option value="deal_breaker">Deal breaker</option>
-                      <option value="must_have">Must have</option>
-                      <option value="important">Important</option>
-                      <option value="nice_to_have">Nice to have</option>
-                      <option value="dont_care">Don't care</option>
-                    </select>
+                      compact={true}
+                    />
                   </div>
                 ))}
               </div>
