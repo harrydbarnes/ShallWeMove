@@ -51,26 +51,26 @@ export const AddListingModal: React.FC<AddListingModalProps> = ({ isOpen, onClos
 
   // Manual Form State
   const [manualAddress, setManualAddress] = useState('');
-  const [manualPrice, setManualPrice] = useState(450000);
-  const [manualBeds, setManualBeds] = useState(3);
-  const [manualBaths, setManualBaths] = useState(2);
-  const [manualReceptions, setManualReceptions] = useState(1);
-  const [manualAreaSqFt, setManualAreaSqFt] = useState<number | ''>(1100);
-  const [manualPropertyType, setManualPropertyType] = useState('semi-detached');
-  const [manualTenure, setManualTenure] = useState('freehold');
+  const [manualPrice, setManualPrice] = useState(0);
+  const [manualBeds, setManualBeds] = useState(0);
+  const [manualBaths, setManualBaths] = useState(0);
+  const [manualReceptions, setManualReceptions] = useState(0);
+  const [manualAreaSqFt, setManualAreaSqFt] = useState<number | ''>('');
+  const [manualPropertyType, setManualPropertyType] = useState('other');
+  const [manualTenure, setManualTenure] = useState('unknown');
   const [manualLeaseYears, setManualLeaseYears] = useState<number | ''>('');
-  const [manualCouncilTax, setManualCouncilTax] = useState('D');
-  const [manualEpc, setManualEpc] = useState('C');
-  const [manualParking, setManualParking] = useState(2);
+  const [manualCouncilTax, setManualCouncilTax] = useState('unknown');
+  const [manualEpc, setManualEpc] = useState('unknown');
+  const [manualParking, setManualParking] = useState(0);
   const [manualGarage, setManualGarage] = useState('none');
-  const [manualGarden, setManualGarden] = useState('south');
-  const [manualLoft, setManualLoft] = useState('boarded');
+  const [manualGarden, setManualGarden] = useState('unknown');
+  const [manualLoft, setManualLoft] = useState('not_mentioned');
   const [manualEv, setManualEv] = useState(false);
-  const [manualEnSuite, setManualEnSuite] = useState(true);
+  const [manualEnSuite, setManualEnSuite] = useState(false);
   const [manualUtility, setManualUtility] = useState(false);
-  const [manualDownstairsWc, setManualDownstairsWc] = useState(true);
+  const [manualDownstairsWc, setManualDownstairsWc] = useState(false);
   const [manualOffice, setManualOffice] = useState(false);
-  const [manualChainStatus, setManualChainStatus] = useState('no_onward_chain');
+  const [manualChainStatus, setManualChainStatus] = useState('unknown');
   const [manualDescription, setManualDescription] = useState('');
 
   if (!isOpen) return null;
@@ -117,8 +117,12 @@ export const AddListingModal: React.FC<AddListingModalProps> = ({ isOpen, onClos
   };
 
   const handleCreateManualListing = () => {
-    if (!manualAddress) {
+    if (!manualAddress.trim()) {
       alert('Please enter a property address.');
+      return;
+    }
+    if (!Number.isFinite(manualPrice) || manualPrice <= 0) {
+      alert('Please enter a valid asking price.');
       return;
     }
 
@@ -143,17 +147,17 @@ export const AddListingModal: React.FC<AddListingModalProps> = ({ isOpen, onClos
       floorAreaSqM: typeof manualAreaSqFt === 'number' ? Math.round((manualAreaSqFt / 10.7639) * 10) / 10 : undefined,
       parkingSpaces: manualParking,
       garageType: manualGarage as any,
-      hasDriveway: manualParking > 0,
+      hasDriveway: false,
       hasEvCharger: manualEv,
       gardenOrientation: manualGarden as any,
-      hasGarden: manualGarden !== 'none',
-      hasPatioOrDecking: true,
+      hasGarden: manualGarden !== 'none' && manualGarden !== 'unknown',
+      hasPatioOrDecking: false,
       hasOutbuilding: false,
       hasEnSuite: manualEnSuite,
       hasUtilityRoom: manualUtility,
       hasDownstairsWc: manualDownstairsWc,
       hasHomeOfficeOrStudy: manualOffice,
-      hasOpenPlanKitchen: true,
+      hasOpenPlanKitchen: false,
       loftStatus: manualLoft as any,
       hasNewBoiler: false,
       hasSolarPanels: false,
@@ -188,22 +192,20 @@ export const AddListingModal: React.FC<AddListingModalProps> = ({ isOpen, onClos
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 max-w-3xl w-full overflow-hidden flex flex-col max-h-[90vh]">
+      <div role="dialog" aria-modal="true" aria-labelledby="add-listing-title" className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 max-w-3xl w-full overflow-hidden flex flex-col max-h-[90vh]">
         {/* Modal Header */}
         <div className="p-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center space-x-2">
-              <span>Add Rightmove Listing</span>
-              <span className="text-xs font-normal text-slate-500 dark:text-slate-400">
-                (Client-Side Only)
-              </span>
+            <h3 id="add-listing-title" className="text-lg font-bold text-slate-900 dark:text-white">
+              Add a listing
             </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              No scraping or remote API calls. Extracted directly inside your browser.
+              Paste a listing or enter details yourself. Saved in this browser.
             </p>
           </div>
           <button
             onClick={onClose}
+            aria-label="Close add listing"
             className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
           >
             <X className="w-5 h-5" />
@@ -518,6 +520,7 @@ export const AddListingModal: React.FC<AddListingModalProps> = ({ isOpen, onClos
           {/* TAB 3: MANUAL ENTRY */}
           {activeTab === 'manual' && (
             <div className="space-y-4">
+              <p className="rounded-lg bg-stone-50 px-3 py-2 text-sm text-slate-600 dark:bg-slate-800 dark:text-slate-300">Enter only details you know. Unconfirmed features are left off the comparison until you check them.</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                 <div className="sm:col-span-2">
                   <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
@@ -554,6 +557,7 @@ export const AddListingModal: React.FC<AddListingModalProps> = ({ isOpen, onClos
                     onChange={(e) => setManualPropertyType(e.target.value)}
                     className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
                   >
+                    <option value="other">Not specified</option>
                     <option value="detached">Detached</option>
                     <option value="semi-detached">Semi-Detached</option>
                     <option value="terraced">Terraced</option>
@@ -612,6 +616,7 @@ export const AddListingModal: React.FC<AddListingModalProps> = ({ isOpen, onClos
                     onChange={(e) => setManualTenure(e.target.value)}
                     className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
                   >
+                    <option value="unknown">Unknown</option>
                     <option value="freehold">Freehold</option>
                     <option value="leasehold">Leasehold</option>
                     <option value="share_of_freehold">Share of Freehold</option>
@@ -629,7 +634,7 @@ export const AddListingModal: React.FC<AddListingModalProps> = ({ isOpen, onClos
                   >
                     {['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'unknown'].map((b) => (
                       <option key={b} value={b}>
-                        Band {b}
+                        {b === 'unknown' ? 'Unknown' : `Band ${b}`}
                       </option>
                     ))}
                   </select>
@@ -646,7 +651,7 @@ export const AddListingModal: React.FC<AddListingModalProps> = ({ isOpen, onClos
                   >
                     {['A', 'B', 'C', 'D', 'E', 'F', 'G', 'unknown'].map((r) => (
                       <option key={r} value={r}>
-                        Band {r}
+                        {r === 'unknown' ? 'Unknown' : `Band ${r}`}
                       </option>
                     ))}
                   </select>
@@ -675,6 +680,7 @@ export const AddListingModal: React.FC<AddListingModalProps> = ({ isOpen, onClos
                     onChange={(e) => setManualGarden(e.target.value)}
                     className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
                   >
+                    <option value="unknown">Unknown</option>
                     <option value="south">South Facing</option>
                     <option value="south_west">South-West Facing</option>
                     <option value="west">West Facing</option>
@@ -709,9 +715,9 @@ export const AddListingModal: React.FC<AddListingModalProps> = ({ isOpen, onClos
                     onChange={(e) => setManualChainStatus(e.target.value)}
                     className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
                   >
+                    <option value="unknown">Unknown</option>
                     <option value="no_onward_chain">No Onward Chain (Chain Free)</option>
                     <option value="chain_in_progress">Chain in progress</option>
-                    <option value="unknown">Unknown</option>
                   </select>
                 </div>
               </div>

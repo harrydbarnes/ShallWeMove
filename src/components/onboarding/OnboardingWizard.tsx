@@ -46,8 +46,8 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
   const [address, setAddress] = useState(activeCurrentHouse.displayAddress);
   const [beds, setBeds] = useState(activeCurrentHouse.bedrooms);
   const [baths, setBaths] = useState(activeCurrentHouse.bathrooms);
-  const [currentValue, setCurrentValue] = useState(activeCurrentHouse.estimatedCurrentValue || 375000);
-  const [mortgage, setMortgage] = useState(activeCurrentHouse.outstandingMortgage || 180000);
+  const [currentValue, setCurrentValue] = useState(activeCurrentHouse.estimatedCurrentValue ?? 0);
+  const [mortgage, setMortgage] = useState(activeCurrentHouse.outstandingMortgage ?? 0);
   const [frustrationsText, setFrustrationsText] = useState(
     activeCurrentHouse.frustrations.join('\n')
   );
@@ -141,7 +141,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                 </h3>
                 <div className="flex items-center justify-between pb-1 mt-1">
                   <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-                    Shall We Move? uses this as your baseline. It never saves to the cloud and is editable at any time.
+                    These fields start with an example Oxford home. Replace the sample address and figures with your own before comparing. Saved entries stay in this browser; address suggestions use an external lookup.
                   </p>
                   <button
                     type="button"
@@ -350,12 +350,12 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
-                <div
+                <button type="button"
                   onClick={() => {
                     loadSampleData();
                     handleFinishOnboarding();
                   }}
-                  className="p-5 rounded-2xl border-2 border-emerald-500/50 bg-emerald-50/30 dark:bg-emerald-950/20 hover:border-emerald-500 cursor-pointer transition shadow-sm"
+                  className="w-full text-left p-5 rounded-2xl border-2 border-emerald-500/50 bg-emerald-50/30 dark:bg-emerald-950/20 hover:border-emerald-500 transition shadow-sm"
                 >
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-bold text-sm text-emerald-800 dark:text-emerald-300">
@@ -368,14 +368,14 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                   <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                     Loads 5 pre-configured realistic listings (Victorian semi, leasehold flat, detached family home, Camden conversion, eco new build) for instant comparison.
                   </p>
-                </div>
+                </button>
 
-                <div
+                <button type="button"
                   onClick={() => {
                     handleFinishOnboarding();
                     onOpenAddListingModal();
                   }}
-                  className="p-5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-brand-500 cursor-pointer transition shadow-sm"
+                  className="w-full text-left p-5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-brand-500 transition shadow-sm"
                 >
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-bold text-sm text-slate-900 dark:text-white">
@@ -386,7 +386,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                   <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
                     Use our Bookmarklet, paste listing text/HTML source, or enter property details manually.
                   </p>
-                </div>
+                </button>
               </div>
             </div>
           )}

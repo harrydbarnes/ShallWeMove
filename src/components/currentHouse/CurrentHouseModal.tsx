@@ -53,15 +53,15 @@ export const CurrentHouseModal: React.FC<CurrentHouseModalProps> = ({ isOpen, on
   const [epcRating, setEpcRating] = useState(activeCurrentHouse.epcRating);
 
   // Financials
-  const [estimatedValue, setEstimatedValue] = useState(activeCurrentHouse.estimatedCurrentValue || 375000);
-  const [mortgageRemaining, setMortgageRemaining] = useState(activeCurrentHouse.outstandingMortgage || 180000);
-  const [interestRate, setInterestRate] = useState(activeCurrentHouse.currentInterestRate || 3.8);
-  const [mortgageMonthly, setMortgageMonthly] = useState(activeCurrentHouse.monthlyCosts.monthlyMortgageOrRent || 950);
-  const [councilTaxMonthly, setCouncilTaxMonthly] = useState(activeCurrentHouse.monthlyCosts.monthlyCouncilTax || 165);
-  const [energyMonthly, setEnergyMonthly] = useState(activeCurrentHouse.monthlyCosts.monthlyEnergy || 160);
-  const [waterMonthly, setWaterMonthly] = useState(activeCurrentHouse.monthlyCosts.monthlyWater || 35);
-  const [serviceChargeMonthly, setServiceChargeMonthly] = useState(activeCurrentHouse.monthlyCosts.monthlyServiceCharge || 0);
-  const [groundRentMonthly, setGroundRentMonthly] = useState(activeCurrentHouse.monthlyCosts.monthlyGroundRent || 0);
+  const [estimatedValue, setEstimatedValue] = useState(activeCurrentHouse.estimatedCurrentValue ?? 0);
+  const [mortgageRemaining, setMortgageRemaining] = useState(activeCurrentHouse.outstandingMortgage ?? 0);
+  const [interestRate, setInterestRate] = useState(activeCurrentHouse.currentInterestRate ?? 0);
+  const [mortgageMonthly, setMortgageMonthly] = useState(activeCurrentHouse.monthlyCosts.monthlyMortgageOrRent ?? 0);
+  const [councilTaxMonthly, setCouncilTaxMonthly] = useState(activeCurrentHouse.monthlyCosts.monthlyCouncilTax ?? 0);
+  const [energyMonthly, setEnergyMonthly] = useState(activeCurrentHouse.monthlyCosts.monthlyEnergy ?? 0);
+  const [waterMonthly, setWaterMonthly] = useState(activeCurrentHouse.monthlyCosts.monthlyWater ?? 0);
+  const [serviceChargeMonthly, setServiceChargeMonthly] = useState(activeCurrentHouse.monthlyCosts.monthlyServiceCharge ?? 0);
+  const [groundRentMonthly, setGroundRentMonthly] = useState(activeCurrentHouse.monthlyCosts.monthlyGroundRent ?? 0);
 
   // Likes & Frustrations
   const [likesText, setLikesText] = useState(activeCurrentHouse.thingsWeLove.join('\n'));

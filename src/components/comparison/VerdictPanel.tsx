@@ -254,7 +254,7 @@ export const VerdictPanel: React.FC<VerdictPanelProps> = ({ summary }) => {
           </span>
           <div className="flex items-baseline space-x-2">
             <span
-              className={`text-xl sm:text-2xl font-black tracking-tight ${
+              className={`whitespace-nowrap text-xl font-black tracking-tight ${
                 headlineMetrics.floorAreaDifferenceSqFt > 0
                   ? 'text-emerald-600 dark:text-emerald-400'
                   : headlineMetrics.floorAreaDifferenceSqFt < 0
@@ -263,14 +263,11 @@ export const VerdictPanel: React.FC<VerdictPanelProps> = ({ summary }) => {
               }`}
             >
               {headlineMetrics.floorAreaDifferenceSqFt > 0 ? '+' : ''}
-              {formatDualArea(
-                headlineMetrics.floorAreaDifferenceSqFt,
-                headlineMetrics.floorAreaDifferenceSqM
-              )}
+              {formatDualArea(headlineMetrics.floorAreaDifferenceSqFt, headlineMetrics.floorAreaDifferenceSqM, true)}
             </span>
           </div>
           <p className="text-[11px] text-slate-400 leading-tight">
-            {formatPercentage(headlineMetrics.floorAreaDifferencePercent)} change in floor footprint
+            {new Intl.NumberFormat('en-GB', { maximumFractionDigits: 1 }).format(headlineMetrics.floorAreaDifferenceSqM)} sq m · {formatPercentage(headlineMetrics.floorAreaDifferencePercent)} change
           </p>
         </div>
 

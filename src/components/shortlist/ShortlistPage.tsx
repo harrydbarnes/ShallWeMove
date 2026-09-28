@@ -67,8 +67,9 @@ export const ShortlistPage: React.FC<ShortlistPageProps> = ({
     return 0;
   });
 
-  const propA = listings.find((l) => l.id === selectedPropAId);
-  const propB = listings.find((l) => l.id === selectedPropBId);
+  const propA = listings.find((l) => l.id === selectedPropAId) || listings[0];
+  const propB = listings.find((l) => l.id === selectedPropBId && l.id !== propA?.id)
+    || listings.find((l) => l.id !== propA?.id);
   const scoreA = propA ? calculateFitScore(propA, wants, activeCurrentHouse) : null;
   const scoreB = propB ? calculateFitScore(propB, wants, activeCurrentHouse) : null;
 
@@ -97,14 +98,14 @@ export const ShortlistPage: React.FC<ShortlistPageProps> = ({
       {/* Shortlist Header & Controls */}
       <div className="p-5 bg-white dark:bg-slate-850 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs">
         <div>
-          <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center space-x-2">
-            <span>Property Shortlist & Rankings</span>
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+            <span>Your shortlist</span>
             <span className="px-2 py-0.5 rounded-full bg-brand-100 dark:bg-brand-950 text-brand-700 dark:text-brand-300 text-[11px] font-bold">
               {listings.length} {listings.length === 1 ? 'Home' : 'Homes'}
             </span>
           </h2>
           <p className="text-slate-500 dark:text-slate-400 mt-0.5">
-            Ranked against your priorities for "{activeCurrentHouse.profileName || activeCurrentHouse.displayAddress}"
+            Ranked against your priorities for {activeCurrentHouse.profileName || activeCurrentHouse.displayAddress}
           </p>
         </div>
 
@@ -112,14 +113,16 @@ export const ShortlistPage: React.FC<ShortlistPageProps> = ({
         <div className="flex flex-wrap items-center gap-2.5">
           <button
             onClick={() => setHeadToHeadMode(!headToHeadMode)}
-            className={`px-3 py-1.5 rounded-lg font-semibold flex items-center space-x-1.5 transition ${
+            disabled={listings.length < 2}
+            title={listings.length < 2 ? 'Add a second listing to compare two homes' : undefined}
+            className={`px-3 py-1.5 rounded-lg font-semibold flex items-center space-x-1.5 transition disabled:cursor-not-allowed disabled:opacity-50 ${
               headToHeadMode
                 ? 'bg-brand-600 text-white shadow-sm'
                 : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200'
             }`}
           >
             <GitCompare className="w-3.5 h-3.5" />
-            <span>{headToHeadMode ? 'Back to Shortlist Table' : 'Compare 2 Listings Head-to-Head'}</span>
+            <span>{headToHeadMode ? 'Back to shortlist' : 'Compare two homes'}</span>
           </button>
 
           <button
@@ -139,10 +142,10 @@ export const ShortlistPage: React.FC<ShortlistPageProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-white dark:bg-slate-850 rounded-2xl border border-slate-200 dark:border-slate-800 text-xs">
             <div>
               <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
-                Select Candidate A:
+                Home A
               </label>
               <select
-                value={selectedPropAId}
+                value={propA?.id || ''}
                 onChange={(e) => setSelectedPropAId(e.target.value)}
                 className="w-full p-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 font-semibold"
               >
@@ -156,15 +159,15 @@ export const ShortlistPage: React.FC<ShortlistPageProps> = ({
 
             <div>
               <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
-                Select Candidate B:
+                Home B
               </label>
               <select
-                value={selectedPropBId}
+                value={propB?.id || ''}
                 onChange={(e) => setSelectedPropBId(e.target.value)}
                 className="w-full p-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 font-semibold"
               >
                 {listings.map((l) => (
-                  <option key={l.id} value={l.id}>
+                  <option key={l.id} value={l.id} disabled={l.id === propA?.id}>
                     {l.displayAddress} ({formatCurrency(l.price)})
                   </option>
                 ))}
@@ -175,9 +178,9 @@ export const ShortlistPage: React.FC<ShortlistPageProps> = ({
           {propA && propB && scoreA && scoreB && (
             <div className="bg-white dark:bg-slate-850 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
               <div className="overflow-x-auto">
-                <table className="w-full text-xs text-left border-collapse">
+                <table className="w-full min-w-[640px] text-sm text-left border-collapse">
                   <thead>
-                    <tr className="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 text-slate-500 font-bold uppercase text-[10px]">
+                    <tr className="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-semibold text-xs">
                       <th className="p-4 w-1/3">Feature</th>
                       <th className="p-4 w-1/3 text-brand-700 dark:text-brand-300">
                         {propA.displayAddress}
@@ -207,14 +210,14 @@ export const ShortlistPage: React.FC<ShortlistPageProps> = ({
                     {/* Bedrooms */}
                     <tr>
                       <td className="p-4 font-semibold">Bedrooms</td>
-                      <td className="p-4">{propA.bedrooms} beds</td>
-                      <td className="p-4">{propB.bedrooms} beds</td>
+                      <td className="p-4">{propA.bedrooms} {propA.bedrooms === 1 ? 'bedroom' : 'bedrooms'}</td>
+                      <td className="p-4">{propB.bedrooms} {propB.bedrooms === 1 ? 'bedroom' : 'bedrooms'}</td>
                     </tr>
                     {/* Bathrooms */}
                     <tr>
                       <td className="p-4 font-semibold">Bathrooms</td>
-                      <td className="p-4">{propA.bathrooms} baths</td>
-                      <td className="p-4">{propB.bathrooms} baths</td>
+                      <td className="p-4">{propA.bathrooms} {propA.bathrooms === 1 ? 'bathroom' : 'bathrooms'}</td>
+                      <td className="p-4">{propB.bathrooms} {propB.bathrooms === 1 ? 'bathroom' : 'bathrooms'}</td>
                     </tr>
                     {/* Floor Area */}
                     <tr>
@@ -237,8 +240,8 @@ export const ShortlistPage: React.FC<ShortlistPageProps> = ({
                     {/* Parking */}
                     <tr>
                       <td className="p-4 font-semibold">Parking Spaces</td>
-                      <td className="p-4">{propA.parkingSpaces} spaces</td>
-                      <td className="p-4">{propB.parkingSpaces} spaces</td>
+                      <td className="p-4">{propA.parkingSpaces} {propA.parkingSpaces === 1 ? 'space' : 'spaces'}</td>
+                      <td className="p-4">{propB.parkingSpaces} {propB.parkingSpaces === 1 ? 'space' : 'spaces'}</td>
                     </tr>
                     {/* Loft */}
                     <tr>
@@ -295,6 +298,12 @@ export const ShortlistPage: React.FC<ShortlistPageProps> = ({
 
           {/* Cards / Table View */}
           <div className="grid grid-cols-1 gap-3">
+            {filtered.length === 0 && (
+              <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-600 dark:border-slate-700 dark:bg-slate-850 dark:text-slate-300">
+                Every saved listing currently triggers a deal breaker. Clear the filter to see all homes.
+                <button onClick={() => setFilterNoDealBreakers(false)} className="ml-2 font-semibold text-brand-700 underline dark:text-brand-300">Show all listings</button>
+              </div>
+            )}
             {filtered.map(({ prop, score }, index) => {
               return (
                 <div
@@ -314,6 +323,7 @@ export const ShortlistPage: React.FC<ShortlistPageProps> = ({
                       <h3 className="font-bold text-sm text-slate-900 dark:text-white">
                         {prop.displayAddress}
                       </h3>
+                      {prop.source === 'sample' && <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[11px] font-semibold text-amber-900 dark:bg-amber-950 dark:text-amber-200">Sample</span>}
                       {score.isDealBreakerHit && (
                         <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300">
                           Deal Breaker Hit
@@ -326,11 +336,11 @@ export const ShortlistPage: React.FC<ShortlistPageProps> = ({
                         {formatCurrency(prop.price)}
                       </span>
                       <span>•</span>
-                      <span>{prop.bedrooms} beds</span>
+                      <span>{prop.bedrooms} {prop.bedrooms === 1 ? 'bed' : 'beds'}</span>
                       <span>•</span>
-                      <span>{prop.bathrooms} baths</span>
+                      <span>{prop.bathrooms} {prop.bathrooms === 1 ? 'bathroom' : 'bathrooms'}</span>
                       <span>•</span>
-                      <span className="capitalize">{prop.propertyType.replace('_', ' ')}</span>
+                      <span className="capitalize">{prop.propertyType.replace(/_/g, ' ')}</span>
                       <span>•</span>
                       <span>{formatDualArea(prop.floorAreaSqFt, prop.floorAreaSqM, true)}</span>
                     </div>

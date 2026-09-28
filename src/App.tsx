@@ -8,6 +8,7 @@ import { CurrentHouseModal } from './components/currentHouse/CurrentHouseModal';
 import { WantsManagerModal } from './components/wants/WantsManagerModal';
 import { ShareSummaryModal } from './components/export/ShareSummaryModal';
 import { BackupModal } from './components/export/BackupModal';
+import { PlannerHandoffModal } from './components/export/PlannerHandoffModal';
 
 import { VerdictPanel } from './components/comparison/VerdictPanel';
 import { SideBySideTable } from './components/comparison/SideBySideTable';
@@ -20,6 +21,7 @@ import { FlagsSection } from './components/comparison/FlagsSection';
 import { ShortlistPage } from './components/shortlist/ShortlistPage';
 
 import { generateComparisonSummary } from './lib/scoring/comparisonSummary';
+import { SAMPLE_CURRENT_HOUSE } from './lib/parser/sampleListings';
 import {
   Sparkles,
   Home,
@@ -60,11 +62,16 @@ export const App: React.FC = () => {
   const [showWants, setShowWants] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showBackupModal, setShowBackupModal] = useState(false);
+  const [showPlannerHandoff, setShowPlannerHandoff] = useState(false);
 
   // Compute comparison summary for active listing
   const comparisonSummary = activeListing
     ? generateComparisonSummary(activeCurrentHouse, activeListing, wants)
     : null;
+  const usingExampleHome =
+    activeCurrentHouse.id === SAMPLE_CURRENT_HOUSE.id &&
+    activeCurrentHouse.displayAddress === SAMPLE_CURRENT_HOUSE.displayAddress &&
+    activeCurrentHouse.estimatedCurrentValue === SAMPLE_CURRENT_HOUSE.estimatedCurrentValue;
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 transition-colors">
@@ -106,6 +113,12 @@ export const App: React.FC = () => {
             onOpenAddListingModal={() => setShowAddListing(true)}
           />
         )}
+        {usingExampleHome && onboardingCompleted && (
+          <div className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950 dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-100">
+            <p><strong>Example current home.</strong> The Oxford address and financial figures are sample data. Replace them before relying on a comparison.</p>
+            <button onClick={() => setShowCurrentHouse(true)} className="font-semibold underline underline-offset-2 hover:no-underline">Enter my home</button>
+          </div>
+        )}
 
         {/* View Mode: SHORTLIST */}
         {viewMode === 'shortlist' && (
@@ -128,11 +141,10 @@ export const App: React.FC = () => {
                   <Building className="w-8 h-8" />
                 </div>
                 <h2 className="text-xl font-bold text-slate-900 dark:text-white">
-                  No Prospective Listing Selected
+                  No listing to compare yet
                 </h2>
                 <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto leading-relaxed">
-                  Compare a Rightmove home directly against your current home ({activeCurrentHouse.displayAddress}).
-                  Add a listing via our Bookmarklet, paste listing text/source, or load our realistic sample fixtures.
+                  Add a home you are considering, then compare its space, costs and fit with your current home.
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
@@ -156,6 +168,17 @@ export const App: React.FC = () => {
             ) : (
               /* Active Comparison View */
               <div className="space-y-6">
+                <div className="flex flex-wrap items-end justify-between gap-2">
+                  <div>
+                    <p className="text-sm font-medium text-slate-600 dark:text-slate-300">Comparing with {activeCurrentHouse.profileName || activeCurrentHouse.displayAddress}</p>
+                    <h1 className="mt-1 text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-3xl">{activeListing.displayAddress}</h1>
+                    {activeListing.source === 'sample' && <p className="mt-1 text-sm font-medium text-amber-800 dark:text-amber-300">Sample listing for exploring the app</p>}
+                  </div>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span className="text-sm font-semibold text-slate-600 dark:text-slate-300">{listings.length} {listings.length === 1 ? 'listing' : 'listings'} saved</span>
+                    <button type="button" onClick={() => setShowPlannerHandoff(true)} className="rounded-lg border border-brand-300 bg-white px-3 py-2 text-sm font-bold text-brand-800 hover:bg-brand-50 dark:border-brand-700 dark:bg-slate-800 dark:text-brand-200 dark:hover:bg-slate-700">Use in Home Move Planner</button>
+                  </div>
+                </div>
                 {/* 1. Scannable Top Verdict Panel */}
                 {comparisonSummary && <VerdictPanel summary={comparisonSummary} />}
 
@@ -284,6 +307,7 @@ export const App: React.FC = () => {
         summary={comparisonSummary}
       />
       <BackupModal isOpen={showBackupModal} onClose={() => setShowBackupModal(false)} />
+      {showPlannerHandoff && <PlannerHandoffModal listing={activeListing} onClose={() => setShowPlannerHandoff(false)} />}
     </div>
   );
 };
