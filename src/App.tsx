@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import { useApp } from './context/AppContext';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
@@ -22,6 +22,9 @@ import { ShortlistPage } from './components/shortlist/ShortlistPage';
 
 import { generateComparisonSummary } from './lib/scoring/comparisonSummary';
 import { SAMPLE_CURRENT_HOUSE } from './lib/parser/sampleListings';
+import { homeName } from './lib/utils/homePresentation';
+
+const HomesMapPage = React.lazy(() => import('./components/map/HomesMapPage').then((module) => ({ default: module.HomesMapPage })));
 import {
   Sparkles,
   Home,
@@ -51,7 +54,7 @@ export const App: React.FC = () => {
     loadSampleData,
   } = useApp();
 
-  const [viewMode, setViewMode] = useState<'comparison' | 'shortlist'>('comparison');
+  const [viewMode, setViewMode] = useState<'comparison' | 'shortlist' | 'map'>('comparison');
   const [activeTab, setActiveTab] = useState<
     'table' | 'space' | 'scorecard' | 'money' | 'location' | 'running' | 'flags'
   >('table');
@@ -105,7 +108,7 @@ export const App: React.FC = () => {
       )}
 
       {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-12">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-10">
         {/* Onboarding Wizard for first-time visitors */}
         {!onboardingCompleted && (
           <OnboardingWizard
@@ -114,13 +117,14 @@ export const App: React.FC = () => {
           />
         )}
         {usingExampleHome && onboardingCompleted && (
-          <div className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950 dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-100">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-950 dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-100">
             <p><strong>Example current home.</strong> The Oxford address and financial figures are sample data. Replace them before relying on a comparison.</p>
             <button onClick={() => setShowCurrentHouse(true)} className="font-semibold underline underline-offset-2 hover:no-underline">Enter my home</button>
           </div>
         )}
 
         {/* View Mode: SHORTLIST */}
+        {viewMode === 'map' && <Suspense fallback={<p className="py-12 text-center text-sm text-slate-600 dark:text-slate-300">Loading map…</p>}><HomesMapPage onCompare={(id) => { setActiveListingId(id); setViewMode('comparison'); }} /></Suspense>}
         {viewMode === 'shortlist' && (
           <ShortlistPage
             onOpenAddListing={() => setShowAddListing(true)}
@@ -167,15 +171,15 @@ export const App: React.FC = () => {
               </div>
             ) : (
               /* Active Comparison View */
-              <div className="space-y-6">
+              <div className="space-y-4">
                 <div className="flex flex-wrap items-end justify-between gap-2">
                   <div>
                     <p className="text-sm font-medium text-slate-600 dark:text-slate-300">Comparing with {activeCurrentHouse.profileName || activeCurrentHouse.displayAddress}</p>
-                    <h1 className="mt-1 text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-3xl">{activeListing.displayAddress}</h1>
+                    <h1 className="mt-1 text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-3xl">{homeName(activeListing)}</h1>
+                    {activeListing.nickname && <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{activeListing.displayAddress}</p>}
                     {activeListing.source === 'sample' && <p className="mt-1 text-sm font-medium text-amber-800 dark:text-amber-300">Sample listing for exploring the app</p>}
                   </div>
                   <div className="flex flex-wrap items-center gap-3">
-                    <span className="text-sm font-semibold text-slate-600 dark:text-slate-300">{listings.length} {listings.length === 1 ? 'listing' : 'listings'} saved</span>
                     <button type="button" onClick={() => setShowPlannerHandoff(true)} className="rounded-lg border border-brand-300 bg-white px-3 py-2 text-sm font-bold text-brand-800 hover:bg-brand-50 dark:border-brand-700 dark:bg-slate-800 dark:text-brand-200 dark:hover:bg-slate-700">Use in Home Move Planner</button>
                   </div>
                 </div>
@@ -298,8 +302,8 @@ export const App: React.FC = () => {
       <Footer />
 
       {/* Modals */}
-      <AddListingModal isOpen={showAddListing} onClose={() => setShowAddListing(false)} />
-      <CurrentHouseModal isOpen={showCurrentHouse} onClose={() => setShowCurrentHouse(false)} />
+      {showAddListing && <AddListingModal isOpen={showAddListing} onClose={() => setShowAddListing(false)} />}
+      {showCurrentHouse && <CurrentHouseModal isOpen={showCurrentHouse} onClose={() => setShowCurrentHouse(false)} />}
       <WantsManagerModal isOpen={showWants} onClose={() => setShowWants(false)} />
       <ShareSummaryModal
         isOpen={showShareModal}

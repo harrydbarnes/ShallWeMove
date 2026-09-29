@@ -42,8 +42,8 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
   const [step, setStep] = useState<1 | 2 | 3>(1);
 
   // Step 1 Form state
-  const [profileName, setProfileName] = useState(activeCurrentHouse.profileName);
-  const [address, setAddress] = useState(activeCurrentHouse.displayAddress);
+  const [profileName, setProfileName] = useState(activeCurrentHouse.id === 'current_house_sample' ? '' : activeCurrentHouse.profileName);
+  const [address, setAddress] = useState(activeCurrentHouse.id === 'current_house_sample' ? '' : activeCurrentHouse.displayAddress);
   const [beds, setBeds] = useState(activeCurrentHouse.bedrooms);
   const [baths, setBaths] = useState(activeCurrentHouse.bathrooms);
   const [currentValue, setCurrentValue] = useState(activeCurrentHouse.estimatedCurrentValue ?? 0);
@@ -52,6 +52,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
     activeCurrentHouse.frustrations.join('\n')
   );
   const [showRightmoveImport, setShowRightmoveImport] = useState(false);
+  const [stepOneError, setStepOneError] = useState('');
 
   const handleImportRightmove = (imported: Partial<CurrentHouseProfile>) => {
     if (imported.displayAddress) setAddress(imported.displayAddress);
@@ -62,10 +63,15 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
   };
 
   const handleSaveStep1 = () => {
+    if (!profileName.trim() || !address.trim()) {
+      setStepOneError('Add a home name and address to continue, or choose Skip setup to explore the example.');
+      return;
+    }
+    setStepOneError('');
     const updated = {
       ...activeCurrentHouse,
-      profileName,
-      displayAddress: address,
+      profileName: profileName.trim(),
+      displayAddress: address.trim(),
       bedrooms: beds,
       bathrooms: baths,
       estimatedCurrentValue: currentValue,
@@ -128,20 +134,17 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
           </div>
         </div>
 
-        <div className="p-6 sm:p-8">
+        <div className="p-5 sm:p-6">
           {/* STEP 1: CURRENT HOUSE */}
           {step === 1 && (
-            <div className="space-y-5">
+            <div className="space-y-4">
               <div>
-                <div className="inline-flex p-2 rounded-xl bg-brand-50 dark:bg-brand-950/40 text-brand-600 dark:text-brand-400 mb-2">
-                  <Home className="w-5 h-5" />
-                </div>
                 <h3 className="text-xl font-bold text-slate-900 dark:text-white">
-                  Tell us about your current home
+                  Start with your current home
                 </h3>
-                <div className="flex items-center justify-between pb-1 mt-1">
+                <div className="mt-1 flex flex-col items-start gap-2 pb-1 sm:flex-row sm:items-start sm:justify-between">
                   <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-                    These fields start with an example Oxford home. Replace the sample address and figures with your own before comparing. Saved entries stay in this browser; address suggestions use an external lookup.
+                    Some example figures are prefilled. Replace them before comparing. Saved homes stay in this browser; address suggestions use an external lookup.
                   </p>
                   <button
                     type="button"
@@ -163,9 +166,13 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="sm:col-span-2">
+                  <label htmlFor="onboarding-home-name" className="mb-1 block text-xs font-semibold text-slate-700 dark:text-slate-300">Home name *</label>
+                  <input id="onboarding-home-name" value={profileName} onChange={(event) => setProfileName(event.target.value)} maxLength={60} placeholder="e.g. Our Oxford home" className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-white" />
+                </div>
+                <div className="sm:col-span-2">
                   <div className="flex items-center justify-between mb-1">
                     <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
-                      Current Address or Nickname
+                      Address *
                     </label>
                     <span className="text-[10px] text-slate-400">Type to search UK addresses</span>
                   </div>
@@ -260,12 +267,14 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                 </div>
               </div>
 
+              {stepOneError && <p role="alert" className="text-sm font-medium text-rose-700 dark:text-rose-300">{stepOneError}</p>}
+
               <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex justify-end">
                 <button
                   onClick={handleSaveStep1}
                   className="inline-flex items-center space-x-2 px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs sm:text-sm font-semibold transition"
                 >
-                  <span>Continue to Priorities</span>
+                  <span>Continue to priorities</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </div>

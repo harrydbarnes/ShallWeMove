@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { ComparisonSummary } from '../../types/comparison';
 import { CurrentHouseProfile } from '../../types/property';
+import { getDataConfidence } from '../../lib/utils/homePresentation';
 import {
   formatCurrency,
   formatCurrencyDelta,
@@ -33,6 +34,7 @@ export const VerdictPanel: React.FC<VerdictPanelProps> = ({ summary }) => {
   const isDealBreakerHit = fitScore.isDealBreakerHit;
   const baseline = fitScore.baselineScore ?? 50;
   const target = fitScore.overallScore;
+  const confidence = getDataConfidence(newProperty);
 
   return (
     <div
@@ -45,11 +47,11 @@ export const VerdictPanel: React.FC<VerdictPanelProps> = ({ summary }) => {
       }`}
     >
       {/* Top Banner: Editorial Headline & Score Journey */}
-      <div className="p-6 sm:p-8 border-b border-slate-100 dark:border-slate-800/80">
-        <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
+      <div className="p-5 sm:p-6 border-b border-slate-100 dark:border-slate-800/80">
+        <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
           {/* Left: Decision Verdict */}
-          <div className="flex-1 space-y-3">
-            <div className="flex items-center space-x-2">
+          <div className="flex-1 space-y-2.5">
+            <div className="flex flex-wrap items-center gap-2">
               <span
                 className={`inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase ${
                   isDealBreakerHit
@@ -74,14 +76,19 @@ export const VerdictPanel: React.FC<VerdictPanelProps> = ({ summary }) => {
                 )}
               </span>
 
+              <span title={confidence.detail} className={`inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-semibold ${confidence.tone === 'strong' ? 'border-emerald-200 bg-emerald-50 text-emerald-900 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-200' : confidence.tone === 'caution' ? 'border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-200' : 'border-slate-200 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200'}`}>
+                Data confidence: {confidence.label}
+              </span>
+
               <span className="text-xs text-slate-400 font-medium">
                 Baseline: {currentProperty.displayAddress}
               </span>
             </div>
 
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-snug">
+            <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-snug">
               {fitScore.plainEnglishVerdict}
             </h2>
+            <p className="text-xs text-slate-600 dark:text-slate-300">{confidence.detail}</p>
 
             {/* Deal Breaker warning banner */}
             {isDealBreakerHit && (
@@ -141,7 +148,7 @@ export const VerdictPanel: React.FC<VerdictPanelProps> = ({ summary }) => {
           </div>
 
           {/* Right: Visual Fit Journey Scoreboard */}
-          <div className="bg-slate-50 dark:bg-slate-850 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 flex-shrink-0 w-full lg:w-72 space-y-3.5">
+          <div className="bg-slate-50 dark:bg-slate-850 p-4 rounded-xl border border-slate-200/80 dark:border-slate-700/80 flex-shrink-0 w-full lg:w-64 space-y-3">
             <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-400">
               <span>Fit Comparison</span>
               <span className="text-[10px]">Score / 100</span>
@@ -202,7 +209,7 @@ export const VerdictPanel: React.FC<VerdictPanelProps> = ({ summary }) => {
       {/* Bottom: 4 Human Context Stat Tiles */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-100 dark:divide-slate-800 bg-slate-50/40 dark:bg-slate-850/40">
         {/* 1. Price Difference */}
-        <div className="p-5 space-y-1">
+        <div className="p-4 space-y-1">
           <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 flex items-center space-x-1.5">
             <PoundSterling className="w-3.5 h-3.5 text-slate-400" />
             <span>Price Difference</span>
@@ -225,7 +232,7 @@ export const VerdictPanel: React.FC<VerdictPanelProps> = ({ summary }) => {
         </div>
 
         {/* 2. Monthly Outgoings Delta */}
-        <div className="p-5 space-y-1">
+        <div className="p-4 space-y-1">
           <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 flex items-center space-x-1.5">
             <Calendar className="w-3.5 h-3.5 text-slate-400" />
             <span>Monthly Cost Delta</span>
@@ -247,7 +254,7 @@ export const VerdictPanel: React.FC<VerdictPanelProps> = ({ summary }) => {
         </div>
 
         {/* 3. Extra Floor Area */}
-        <div className="p-5 space-y-1">
+        <div className="p-4 space-y-1">
           <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 flex items-center space-x-1.5">
             <Maximize2 className="w-3.5 h-3.5 text-slate-400" />
             <span>Extra Living Space</span>
@@ -272,7 +279,7 @@ export const VerdictPanel: React.FC<VerdictPanelProps> = ({ summary }) => {
         </div>
 
         {/* 4. Price Per Sq Ft */}
-        <div className="p-5 space-y-1">
+        <div className="p-4 space-y-1">
           <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 flex items-center space-x-1.5">
             <TrendingUp className="w-3.5 h-3.5 text-slate-400" />
             <span>Value Density (£/sq ft)</span>

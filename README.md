@@ -16,6 +16,8 @@ Hosted statically on GitHub Pages with zero backend, zero database, and 100% cli
   3. **Manual Entry & Editing**: Full manual form for every field so the app is always useful.
 - **Text & Heuristic Analyser**: Detects loft status (`not_mentioned`, `boarded`, `boarded_with_ladder_light`, `converted_with_building_regs`), garage type (`single`, `double`, `integral`, `detached`), parking spaces, EV chargers, garden orientation, en-suite, utility room, downstairs WC, home office, solar panels, and modernisation needs—with exact quotes shown as evidence.
 - **Priorities & Deal Breakers**: Set importance (`Deal breaker`, `Must have`, `Important`, `Nice to have`, `Don't care`). Listings that violate a deal breaker are immediately flagged in red.
+- **Named Homes & Map**: Give each saved listing a name, rename it in the shortlist, and compare two named homes. The Map view plots known coordinates and can locate missing pins using postcodes.io or Photon after you choose to do so; each home also has a Google Maps link. Pins are approximate.
+- **Data Confidence**: The verdict labels how complete the imported listing evidence is, and distinguishes samples and manual entries. It is not a prediction about the move or a property survey.
 - **UK Property Specifics**:
   - English Stamp Duty Land Tax (SDLT) calculator (Moving Home, First-Time Buyer relief, Additional Property surcharge).
   - Dual metric/imperial area formatting (sq ft and sq m).

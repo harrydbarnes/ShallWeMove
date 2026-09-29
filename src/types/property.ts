@@ -95,6 +95,7 @@ export interface AgentInfo {
 
 export interface Property {
   id: string;
+  nickname?: string; // User's name for this saved home; address remains the listing fact.
   rightmoveId?: string;
   zooplaId?: string;
   url?: string;

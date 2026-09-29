@@ -40,6 +40,7 @@ export const AddListingModal: React.FC<AddListingModalProps> = ({ isOpen, onClos
 
   // Paste state
   const [pasteInput, setPasteInput] = useState('');
+  const [listingName, setListingName] = useState('');
   const [parseError, setParseError] = useState<string | null>(null);
   const [parsedPreview, setParsedPreview] = useState<{
     property: Property;
@@ -89,6 +90,10 @@ export const AddListingModal: React.FC<AddListingModalProps> = ({ isOpen, onClos
       setParseError('Please paste listing source HTML, JSON, or copied text.');
       return;
     }
+    if (/^https?:\/\/(?:www\.)?(?:rightmove|zoopla)\.co\.uk\/[^\s]+$/i.test(pasteInput.trim())) {
+      setParseError('Open the listing and copy its page text, or use the bookmarklet. A link alone cannot provide the listing details.');
+      return;
+    }
 
     try {
       const result = parseListingInput(pasteInput, 'paste');
@@ -109,7 +114,7 @@ export const AddListingModal: React.FC<AddListingModalProps> = ({ isOpen, onClos
 
   const handleConfirmParsedListing = () => {
     if (parsedPreview) {
-      addListing(parsedPreview.property);
+      addListing({ ...parsedPreview.property, nickname: listingName.trim() || undefined });
       onClose();
     }
   };
@@ -120,10 +125,6 @@ export const AddListingModal: React.FC<AddListingModalProps> = ({ isOpen, onClos
       return;
     }
 
-    if (/^https?:\/\/(?:www\.)?(?:rightmove|zoopla)\.co\.uk\/[^\s]+$/i.test(pasteInput.trim())) {
-      setParseError('Open the listing and copy its page text, or use the bookmarklet. A link alone cannot provide the listing details.');
-      return;
-    }
     if (!Number.isFinite(manualPrice) || manualPrice <= 0) {
       alert('Please enter a valid asking price.');
       return;
@@ -131,6 +132,7 @@ export const AddListingModal: React.FC<AddListingModalProps> = ({ isOpen, onClos
 
     const newProp: Property = {
       id: `prop_manual_${Date.now()}`,
+      nickname: listingName.trim() || undefined,
       source: 'manual',
       addedAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -376,6 +378,11 @@ export const AddListingModal: React.FC<AddListingModalProps> = ({ isOpen, onClos
                     </div>
                   </div>
 
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+                    Name this home <span className="font-normal text-slate-500">(optional)</span>
+                    <input type="text" value={listingName} onChange={(event) => setListingName(event.target.value)} maxLength={60} placeholder="e.g. The garden house" className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-white" />
+                  </label>
+
                   {/* Inferred Features with Evidence Snippets */}
                   {parsedPreview.property.detectedFeatures.length > 0 && (
                     <div>
@@ -524,6 +531,10 @@ export const AddListingModal: React.FC<AddListingModalProps> = ({ isOpen, onClos
           {activeTab === 'manual' && (
             <div className="space-y-4">
               <p className="rounded-lg bg-stone-50 px-3 py-2 text-sm text-slate-600 dark:bg-slate-800 dark:text-slate-300">Enter only details you know. Unconfirmed features are left off the comparison until you check them.</p>
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+                Name this home <span className="font-normal text-slate-500">(optional)</span>
+                <input type="text" value={listingName} onChange={(event) => setListingName(event.target.value)} maxLength={60} placeholder="e.g. The garden house" className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-white" />
+              </label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                 <div className="sm:col-span-2">
                   <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">

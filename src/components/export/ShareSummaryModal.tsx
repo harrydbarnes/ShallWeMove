@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { ComparisonSummary } from '../../types/comparison';
 import { CurrentHouseProfile } from '../../types/property';
+import { getDataConfidence, homeName } from '../../lib/utils/homePresentation';
 import {
   formatCurrency,
   formatCurrencyDelta,
@@ -33,6 +34,7 @@ export const ShareSummaryModal: React.FC<ShareSummaryModalProps> = ({
   if (!isOpen || !summary) return null;
 
   const { currentProperty, newProperty, fitScore, headlineMetrics } = summary;
+  const confidence = getDataConfidence(newProperty);
 
   const handlePrint = () => {
     window.print();
@@ -42,9 +44,10 @@ export const ShareSummaryModal: React.FC<ShareSummaryModalProps> = ({
     const text = `
 === SHALL WE MOVE? COMPARISON SUMMARY ===
 Current Home: ${currentProperty.displayAddress} (Estimated Value: ${formatCurrency((currentProperty as CurrentHouseProfile).estimatedCurrentValue || currentProperty.price)})
-Prospective Home: ${newProperty.displayAddress} (Asking Price: ${formatCurrency(newProperty.price)})
+Prospective Home: ${homeName(newProperty)} — ${newProperty.displayAddress} (Asking Price: ${formatCurrency(newProperty.price)})
 
 VERDICT: ${fitScore.plainEnglishVerdict}
+Data confidence: ${confidence.label}. ${confidence.detail}
 Fit Score: ${fitScore.overallScore}/100 (${fitScore.scoreDelta && fitScore.scoreDelta > 0 ? `+${fitScore.scoreDelta}` : fitScore.scoreDelta} vs current home)
 Must Haves Met: ${fitScore.mustHavesMetCount}/${fitScore.mustHavesTotalCount}
 Deal Breakers: ${fitScore.isDealBreakerHit ? `HIT (${fitScore.dealBreakersTriggered.join(', ')})` : '0 Hit (Passed)'}
@@ -92,13 +95,15 @@ Generated client-side via Shall We Move?
             </div>
 
             <div className="space-y-1">
-              <p className="font-bold text-slate-900 dark:text-white">{newProperty.displayAddress}</p>
+              <p className="font-bold text-slate-900 dark:text-white">{homeName(newProperty)}</p>
+              {newProperty.nickname && <p className="text-slate-500">{newProperty.displayAddress}</p>}
               <p className="text-slate-500">vs {currentProperty.displayAddress}</p>
             </div>
 
             <p className="font-semibold text-slate-800 dark:text-slate-200 italic">
               "{fitScore.plainEnglishVerdict}"
             </p>
+            <p className="text-slate-600 dark:text-slate-300">Data confidence: {confidence.label}. {confidence.detail}</p>
 
             <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200 dark:border-slate-700 text-[11px]">
               <div>

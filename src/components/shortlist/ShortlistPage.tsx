@@ -12,11 +12,13 @@ import {
   XCircle,
   PoundSterling,
   Building,
+  Pencil,
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { calculateFitScore } from '../../lib/scoring/fitScore';
 import { formatCurrency, formatDualArea } from '../../lib/utils/formatters';
 import { Property } from '../../types/property';
+import { homeName } from '../../lib/utils/homePresentation';
 
 interface ShortlistPageProps {
   onOpenAddListing: () => void;
@@ -32,6 +34,7 @@ export const ShortlistPage: React.FC<ShortlistPageProps> = ({
     activeCurrentHouse,
     wants,
     deleteListing,
+    updateListing,
     secondaryListingId,
     setSecondaryListingId,
   } = useApp();
@@ -39,6 +42,8 @@ export const ShortlistPage: React.FC<ShortlistPageProps> = ({
   const [sortBy, setSortBy] = useState<'score' | 'price_asc' | 'price_desc' | 'beds' | 'area'>('score');
   const [filterNoDealBreakers, setFilterNoDealBreakers] = useState(false);
   const [headToHeadMode, setHeadToHeadMode] = useState(false);
+  const [editingHomeId, setEditingHomeId] = useState<string | null>(null);
+  const [editingName, setEditingName] = useState('');
   const [selectedPropAId, setSelectedPropAId] = useState<string>(
     listings.length > 0 ? listings[0].id : ''
   );
@@ -151,7 +156,7 @@ export const ShortlistPage: React.FC<ShortlistPageProps> = ({
               >
                 {listings.map((l) => (
                   <option key={l.id} value={l.id}>
-                    {l.displayAddress} ({formatCurrency(l.price)})
+                    {homeName(l)} ({formatCurrency(l.price)})
                   </option>
                 ))}
               </select>
@@ -168,7 +173,7 @@ export const ShortlistPage: React.FC<ShortlistPageProps> = ({
               >
                 {listings.map((l) => (
                   <option key={l.id} value={l.id} disabled={l.id === propA?.id}>
-                    {l.displayAddress} ({formatCurrency(l.price)})
+                    {homeName(l)} ({formatCurrency(l.price)})
                   </option>
                 ))}
               </select>
@@ -183,10 +188,10 @@ export const ShortlistPage: React.FC<ShortlistPageProps> = ({
                     <tr className="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-semibold text-xs">
                       <th className="p-4 w-1/3">Feature</th>
                       <th className="p-4 w-1/3 text-brand-700 dark:text-brand-300">
-                        {propA.displayAddress}
+                        {homeName(propA)}
                       </th>
                       <th className="p-4 w-1/3 text-emerald-700 dark:text-emerald-300">
-                        {propB.displayAddress}
+                        {homeName(propB)}
                       </th>
                     </tr>
                   </thead>
@@ -320,9 +325,8 @@ export const ShortlistPage: React.FC<ShortlistPageProps> = ({
                       <span className="w-5 h-5 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-[10px] font-black text-slate-500">
                         #{index + 1}
                       </span>
-                      <h3 className="font-bold text-sm text-slate-900 dark:text-white">
-                        {prop.displayAddress}
-                      </h3>
+                      <h3 className="font-bold text-sm text-slate-900 dark:text-white">{homeName(prop)}</h3>
+                      <button type="button" onClick={() => { setEditingHomeId(prop.id); setEditingName(prop.nickname || ''); }} aria-label={`Rename ${homeName(prop)}`} className="rounded p-1 text-slate-400 hover:text-brand-700 dark:hover:text-brand-300"><Pencil className="h-3.5 w-3.5" /></button>
                       {prop.source === 'sample' && <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[11px] font-semibold text-amber-900 dark:bg-amber-950 dark:text-amber-200">Sample</span>}
                       {score.isDealBreakerHit && (
                         <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300">
@@ -330,6 +334,16 @@ export const ShortlistPage: React.FC<ShortlistPageProps> = ({
                         </span>
                       )}
                     </div>
+
+                    {editingHomeId === prop.id && (
+                      <form onSubmit={(event) => { event.preventDefault(); updateListing({ ...prop, nickname: editingName.trim() || undefined, updatedAt: new Date().toISOString() }); setEditingHomeId(null); }} className="flex flex-wrap items-center gap-2">
+                        <label className="sr-only" htmlFor={`home-name-${prop.id}`}>Home name</label>
+                        <input id={`home-name-${prop.id}`} autoFocus value={editingName} onChange={(event) => setEditingName(event.target.value)} maxLength={60} placeholder="Home name" className="min-w-40 flex-1 rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-white" />
+                        <button type="submit" className="rounded-lg bg-brand-700 px-3 py-1.5 text-xs font-semibold text-white">Save name</button>
+                        <button type="button" onClick={() => setEditingHomeId(null)} className="px-2 py-1.5 text-xs text-slate-600 dark:text-slate-300">Cancel</button>
+                      </form>
+                    )}
+                    {prop.nickname && <p className="text-xs text-slate-500 dark:text-slate-400">{prop.displayAddress}</p>}
 
                     <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
                       <span className="font-extrabold text-slate-900 dark:text-white">
