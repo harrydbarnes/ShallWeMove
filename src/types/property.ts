@@ -1,5 +1,5 @@
 /**
- * Types representing a UK property listing (Rightmove extraction & manual inputs).
+ * Types representing a UK property listing (portal extraction and manual inputs).
  * Strictly in British English: postcode, council tax, tenure, ground rent, service charge, etc.
  */
 
@@ -96,6 +96,7 @@ export interface AgentInfo {
 export interface Property {
   id: string;
   rightmoveId?: string;
+  zooplaId?: string;
   url?: string;
   source: 'bookmarklet' | 'paste' | 'manual' | 'sample';
   addedAt: string;

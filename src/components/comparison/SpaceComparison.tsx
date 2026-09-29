@@ -270,7 +270,7 @@ export const SpaceComparison: React.FC<SpaceComparisonProps> = ({ summary }) => 
             ) : (
               <div className="text-center text-slate-400 p-4">
                 <FileImage className="w-8 h-8 mx-auto mb-2 text-slate-300 dark:text-slate-600" />
-                <p className="text-xs">No floorplan image detected in Rightmove listing.</p>
+                <p className="text-xs">No floorplan image detected in this listing.</p>
               </div>
             )}
             <span className="text-[11px] font-semibold text-brand-600 dark:text-brand-400 mt-2">

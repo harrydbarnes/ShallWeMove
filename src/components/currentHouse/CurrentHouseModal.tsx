@@ -217,7 +217,7 @@ export const CurrentHouseModal: React.FC<CurrentHouseModalProps> = ({ isOpen, on
             <div className="space-y-4">
               <div className="flex items-center justify-between pb-1 border-b border-slate-100 dark:border-slate-800">
                 <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Search address or import specs directly from a Rightmove listing
+                  Search address or import specs from a Rightmove or Zoopla listing
                 </p>
                 <button
                   type="button"
@@ -225,7 +225,7 @@ export const CurrentHouseModal: React.FC<CurrentHouseModalProps> = ({ isOpen, on
                   className="inline-flex items-center space-x-1.5 text-xs font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700 bg-brand-50 dark:bg-brand-950/40 px-2.5 py-1.5 rounded-lg border border-brand-200 dark:border-brand-800 transition"
                 >
                   <Sparkles className="w-3.5 h-3.5" />
-                  <span>{showRightmoveImport ? 'Hide Rightmove Import' : 'Import from Rightmove'}</span>
+                  <span>{showRightmoveImport ? 'Hide listing import' : 'Import from Rightmove or Zoopla'}</span>
                 </button>
               </div>
 

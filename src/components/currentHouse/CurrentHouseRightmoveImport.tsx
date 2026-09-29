@@ -22,19 +22,18 @@ export const CurrentHouseRightmoveImport: React.FC<CurrentHouseRightmoveImportPr
 
     const trimmed = rawInput.trim();
     if (!trimmed) {
-      setErrorMsg('Please paste Rightmove listing text, HTML source, or JSON.');
+      setErrorMsg('Please paste Rightmove or Zoopla listing text, HTML source, or bookmarklet JSON.');
       return;
     }
 
-    // Check if input is merely a Rightmove URL without page content
+    // A URL alone contains no listing facts and cannot be fetched from this app.
     if (
       (trimmed.startsWith('http://') || trimmed.startsWith('https://')) &&
-      trimmed.includes('rightmove.co.uk') &&
+      /(?:rightmove|zoopla)\.co\.uk/.test(trimmed) &&
       trimmed.length < 200
     ) {
       setErrorMsg(
-        'Browsers cannot fetch Rightmove URLs directly due to CORS security restrictions. ' +
-        'To import this listing: open the Rightmove page, press Ctrl+A, Ctrl+C to copy the page text or source, then paste it here.'
+        'Open the listing page, press Ctrl+A and Ctrl+C to copy its text, then paste it here. A link alone cannot provide listing details.'
       );
       return;
     }
@@ -47,26 +46,30 @@ export const CurrentHouseRightmoveImport: React.FC<CurrentHouseRightmoveImportPr
       }
 
       const p = parsed.property;
+      if (p.displayAddress === 'Address not stated' || p.displayAddress === 'Address not specified' || (!p.price && !p.bedrooms)) {
+        setErrorMsg('Could not find a complete listing. Copy the text from an individual property page or use the bookmarklet.');
+        return;
+      }
 
       const imported: Partial<CurrentHouseProfile> = {
-        displayAddress: p.displayAddress || undefined,
+        displayAddress: p.displayAddress,
         postcode: p.postcode || undefined,
-        bedrooms: p.bedrooms || 3,
-        bathrooms: p.bathrooms || 1,
-        receptions: p.receptions || 1,
-        propertyType: (p.propertyType as any) || 'terraced',
-        tenure: (p.tenure as any) || 'freehold',
+        bedrooms: p.bedrooms || undefined,
+        bathrooms: p.bathrooms || undefined,
+        receptions: p.receptions || undefined,
+        propertyType: p.propertyType !== 'other' ? p.propertyType : undefined,
+        tenure: p.tenure !== 'unknown' ? p.tenure : undefined,
         floorAreaSqFt: p.floorAreaSqFt || undefined,
         floorAreaSqM: p.floorAreaSqM || undefined,
         parkingSpaces: p.parkingSpaces ?? 0,
-        garageType: (p.garageType as any) || 'none',
-        hasDriveway: p.hasDriveway ?? false,
-        gardenOrientation: (p.gardenOrientation as any) || 'none',
-        hasGarden: p.hasGarden ?? false,
-        loftStatus: (p.loftStatus as any) || 'not_mentioned',
-        councilTaxBand: (p.councilTaxBand as any) || 'D',
-        epcRating: (p.epcRating as any) || 'D',
-        estimatedCurrentValue: p.price || 375000,
+        garageType: p.garageType !== 'none' ? p.garageType : undefined,
+        hasDriveway: p.hasDriveway || undefined,
+        gardenOrientation: p.gardenOrientation !== 'unknown' ? p.gardenOrientation : undefined,
+        hasGarden: p.hasGarden || undefined,
+        loftStatus: p.loftStatus !== 'not_mentioned' ? p.loftStatus : undefined,
+        councilTaxBand: p.councilTaxBand !== 'unknown' ? p.councilTaxBand : undefined,
+        epcRating: p.epcRating !== 'unknown' ? p.epcRating : undefined,
+        estimatedCurrentValue: p.price || undefined,
         frustrations: [],
         thingsWeLove: p.keyFeatures || [],
       };
@@ -89,7 +92,7 @@ export const CurrentHouseRightmoveImport: React.FC<CurrentHouseRightmoveImportPr
         <div className="flex items-center space-x-2">
           <Sparkles className="w-4 h-4 text-brand-600 dark:text-brand-400" />
           <h4 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">
-            Import Current Home from Rightmove
+            Import Current Home from Rightmove or Zoopla
           </h4>
         </div>
         {onCancel && (
@@ -104,7 +107,7 @@ export const CurrentHouseRightmoveImport: React.FC<CurrentHouseRightmoveImportPr
       </div>
 
       <p className="text-[11px] sm:text-xs text-slate-600 dark:text-slate-300">
-        Already have your home listed or recently bought it on Rightmove? Paste the page text, HTML source, or bookmarklet output below to auto-fill your room counts, floor area, tenure, and specs in one click.
+        Have a listing for your current home? Paste its Rightmove or Zoopla page text, source, or bookmarklet output to review the details before applying them.
       </p>
 
       <div>
@@ -112,7 +115,7 @@ export const CurrentHouseRightmoveImport: React.FC<CurrentHouseRightmoveImportPr
           rows={3}
           value={rawInput}
           onChange={(e) => setRawInput(e.target.value)}
-          placeholder="Paste Rightmove listing text (Ctrl+A, Ctrl+C from Rightmove), HTML source, or JSON-LD here..."
+          placeholder="Paste Rightmove or Zoopla listing text, HTML source, or bookmarklet JSON..."
           className="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-mono placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500"
         />
       </div>
@@ -137,7 +140,7 @@ export const CurrentHouseRightmoveImport: React.FC<CurrentHouseRightmoveImportPr
             </div>
             <div>
               <span className="text-slate-500 block">Bed / Bath:</span>
-              <span className="font-semibold">{detectedSummary.bedrooms} beds, {detectedSummary.bathrooms} baths</span>
+              <span className="font-semibold">{detectedSummary.bedrooms ?? 'Not stated'} beds, {detectedSummary.bathrooms ?? 'Not stated'} baths</span>
             </div>
             <div>
               <span className="text-slate-500 block">Floor Area:</span>
@@ -153,7 +156,7 @@ export const CurrentHouseRightmoveImport: React.FC<CurrentHouseRightmoveImportPr
 
       <div className="flex items-center justify-between pt-1">
         <span className="text-[10px] text-slate-400">
-          Tip: Works with Rightmove page text, HTML, or Bookmarklet JSON
+          Works with Rightmove and Zoopla listing content
         </span>
 
         {detectedSummary ? (

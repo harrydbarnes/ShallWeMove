@@ -149,7 +149,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                     className="inline-flex items-center space-x-1.5 text-xs font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 bg-brand-50 dark:bg-brand-950/40 px-2.5 py-1.5 rounded-lg border border-brand-200 dark:border-brand-800 transition flex-shrink-0"
                   >
                     <Sparkles className="w-3.5 h-3.5" />
-                    <span>{showRightmoveImport ? 'Hide Rightmove Import' : 'Import from Rightmove'}</span>
+                    <span>{showRightmoveImport ? 'Hide listing import' : 'Import from Rightmove or Zoopla'}</span>
                   </button>
                 </div>
               </div>
@@ -345,7 +345,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                   You're all set! Let's compare properties.
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto mt-1">
-                  Choose how you'd like to get started. You can explore with our 5 realistic UK listing fixtures or add your own Rightmove listing right now.
+                  Choose how you'd like to get started. You can explore with our 5 realistic UK listing fixtures or add your own Rightmove or Zoopla listing right now.
                 </p>
               </div>
 
@@ -379,7 +379,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                 >
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-bold text-sm text-slate-900 dark:text-white">
-                      Add a Rightmove Listing
+                      Add a Listing
                     </span>
                     <PlusCircle className="w-4 h-4 text-brand-600 dark:text-brand-400" />
                   </div>

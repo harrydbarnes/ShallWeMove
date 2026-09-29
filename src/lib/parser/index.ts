@@ -1,5 +1,5 @@
 /**
- * Unified multi-strategy parser for Rightmove listings.
+ * Unified multi-strategy parser for Rightmove and Zoopla listings.
  * Accepts:
  * 1. Raw HTML page source
  * 2. window.PAGE_MODEL JSON string or object
@@ -14,11 +14,12 @@ import { Property, FieldExtractionSummary } from '../../types/property';
 import { parsePageModel, ParseResult } from './pageModelParser';
 import { parseJsonLd } from './jsonLdParser';
 import { parseCopiedText } from './textHeuristicParser';
+import { isZooplaPayload, looksLikeZooplaText, parseZoopla } from './zooplaParser';
 
 export interface UnifiedParseResult {
   property: Property;
   summary: FieldExtractionSummary[];
-  parseStrategy: 'page_model' | 'json_ld' | 'html_regex' | 'url_hash' | 'text_heuristics';
+  parseStrategy: 'page_model' | 'json_ld' | 'html_regex' | 'url_hash' | 'text_heuristics' | 'zoopla';
 }
 
 /**
@@ -123,6 +124,15 @@ export function parseListingInput(
 ): UnifiedParseResult {
   // If already an object (e.g. from bookmarklet postMessage or deserialized JSON)
   if (typeof rawInput === 'object' && rawInput !== null) {
+    if (isZooplaPayload(rawInput)) {
+      const property = parseZoopla(rawInput, source);
+      return { property, summary: property.extractionSummary, parseStrategy: 'zoopla' };
+    }
+    const data = rawInput as Record<string, unknown>;
+    if (data['@type'] || data['@graph']) {
+      const res = parseJsonLd(data, source);
+      if (res) return { property: res.property, summary: res.summary, parseStrategy: 'json_ld' };
+    }
     const res = parsePageModel(rawInput, source);
     return {
       property: res.property,
@@ -146,7 +156,7 @@ export function parseListingInput(
         const binaryStr = atob(decoded);
         jsonPayload = JSON.parse(binaryStr);
       }
-      const res = parsePageModel(jsonPayload, 'bookmarklet');
+      const res = parseListingInput(jsonPayload, 'bookmarklet');
       return {
         property: res.property,
         summary: res.summary,
@@ -161,6 +171,10 @@ export function parseListingInput(
   if (inputStr.startsWith('{') && inputStr.endsWith('}')) {
     try {
       const parsedJson = JSON.parse(inputStr);
+      if (isZooplaPayload(parsedJson)) {
+        const property = parseZoopla(parsedJson, source);
+        return { property, summary: property.extractionSummary, parseStrategy: 'zoopla' };
+      }
       if (parsedJson['@type'] || parsedJson['@graph']) {
         const jsonLdRes = parseJsonLd(parsedJson, source);
         if (jsonLdRes) {
@@ -183,6 +197,11 @@ export function parseListingInput(
   }
 
   // 3. Check if input is HTML page source containing window.PAGE_MODEL
+  if (looksLikeZooplaText(inputStr)) {
+    const property = parseZoopla(inputStr, source);
+    return { property, summary: property.extractionSummary, parseStrategy: 'zoopla' };
+  }
+
   if (inputStr.includes('window.PAGE_MODEL') || inputStr.includes('<!DOCTYPE') || inputStr.includes('<html')) {
     const extractedModel = extractPageModelFromHtml(inputStr);
     if (extractedModel) {

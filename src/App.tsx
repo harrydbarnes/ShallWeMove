@@ -153,7 +153,7 @@ export const App: React.FC = () => {
                     className="w-full sm:w-auto px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-semibold shadow-sm transition flex items-center justify-center space-x-2"
                   >
                     <PlusCircle className="w-4 h-4" />
-                    <span>Add Rightmove Listing</span>
+                    <span>Add a Listing</span>
                   </button>
 
                   <button

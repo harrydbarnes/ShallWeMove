@@ -1,6 +1,6 @@
 /**
  * Text Heuristic Parser for copied listing text.
- * Parses plain text copied directly from a Rightmove listing page.
+ * Parses plain text copied from a property listing page.
  */
 
 import { Property, FieldExtractionSummary, CouncilTaxBand, EpcRating } from '../../types/property';

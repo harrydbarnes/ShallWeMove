@@ -20,7 +20,6 @@ import { parseListingInput } from '../../lib/parser/index';
 import { Property, FieldExtractionSummary } from '../../types/property';
 import {
   generateBookmarkletJs,
-  generateDirectTransferBookmarkletJs,
 } from '../../lib/bookmarklet/bookmarkletCode';
 import { BOOKMARKLET_GUIDES } from '../../lib/bookmarklet/bookmarkletHelp';
 import { getSampleListings } from '../../lib/parser/sampleListings';
@@ -77,7 +76,6 @@ export const AddListingModal: React.FC<AddListingModalProps> = ({ isOpen, onClos
 
   const currentAppOrigin = typeof window !== 'undefined' ? window.location.href.split('#')[0] : '';
   const bookmarkletCode = generateBookmarkletJs(currentAppOrigin);
-  const directTransferBookmarklet = generateDirectTransferBookmarkletJs(currentAppOrigin);
 
   const handleCopyBookmarklet = () => {
     navigator.clipboard.writeText(bookmarkletCode);
@@ -119,6 +117,11 @@ export const AddListingModal: React.FC<AddListingModalProps> = ({ isOpen, onClos
   const handleCreateManualListing = () => {
     if (!manualAddress.trim()) {
       alert('Please enter a property address.');
+      return;
+    }
+
+    if (/^https?:\/\/(?:www\.)?(?:rightmove|zoopla)\.co\.uk\/[^\s]+$/i.test(pasteInput.trim())) {
+      setParseError('Open the listing and copy its page text, or use the bookmarklet. A link alone cannot provide the listing details.');
       return;
     }
     if (!Number.isFinite(manualPrice) || manualPrice <= 0) {
@@ -263,9 +266,9 @@ export const AddListingModal: React.FC<AddListingModalProps> = ({ isOpen, onClos
                     <div>
                       <p className="font-semibold">Accepts any of the following:</p>
                       <ul className="list-disc list-inside mt-1 space-y-0.5 text-[11px] text-emerald-700 dark:text-emerald-400">
-                        <li><strong>Raw Page Source (HTML):</strong> Right-click on Rightmove &rarr; "View Page Source" &rarr; Ctrl+A, Ctrl+C, Ctrl+V</li>
-                        <li><strong>PAGE_MODEL JSON:</strong> Extracted by inspect element or bookmarklet</li>
-                        <li><strong>Copied Page Text:</strong> Select and copy the text from the Rightmove listing</li>
+                        <li><strong>Copied page text:</strong> Open a Rightmove or Zoopla listing, then select all and copy</li>
+                        <li><strong>Bookmarklet output:</strong> Use the bookmarklet on either site, then paste its JSON here</li>
+                        <li><strong>Page source:</strong> Rightmove PAGE_MODEL or Zoopla HTML</li>
                       </ul>
                     </div>
                   </div>
@@ -279,7 +282,7 @@ export const AddListingModal: React.FC<AddListingModalProps> = ({ isOpen, onClos
                       value={pasteInput}
                       onChange={(e) => setPasteInput(e.target.value)}
                       className="w-full font-mono text-xs p-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500"
-                      placeholder="Paste page source HTML (containing window.PAGE_MODEL), JSON, or copied listing text..."
+                      placeholder="Paste Rightmove or Zoopla listing text, page source, or bookmarklet JSON..."
                     />
                   </div>
 
@@ -349,7 +352,7 @@ export const AddListingModal: React.FC<AddListingModalProps> = ({ isOpen, onClos
                       <div>
                         <span className="text-slate-400">Beds / Baths:</span>
                         <p className="font-semibold text-slate-800 dark:text-slate-200">
-                          {parsedPreview.property.bedrooms} bed / {parsedPreview.property.bathrooms} bath
+                          {parsedPreview.property.bedrooms || 'Not stated'} bed / {parsedPreview.property.bathrooms || 'Not stated'} bath
                         </p>
                       </div>
                       <div>
@@ -441,7 +444,7 @@ export const AddListingModal: React.FC<AddListingModalProps> = ({ isOpen, onClos
                   <span>How the Bookmarklet Works</span>
                 </div>
                 <p className="leading-relaxed">
-                  Rightmove prohibits cross-origin fetching from GitHub Pages. Our lightweight bookmarklet runs inside your active Rightmove tab, reads the loaded <code className="font-mono bg-white/60 dark:bg-black/30 px-1 py-0.5 rounded">window.PAGE_MODEL</code> data already on your screen, and passes it directly to your Shall We Move dashboard.
+                  On a Rightmove or Zoopla for-sale listing, the bookmarklet reads the listing already shown in your browser and copies its details. Return here and paste the result into Add a listing. Review every extracted fact before saving.
                 </p>
               </div>
 
