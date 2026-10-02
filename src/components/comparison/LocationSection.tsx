@@ -13,6 +13,7 @@ import {
 import { ComparisonSummary } from '../../types/comparison';
 import { useApp } from '../../context/AppContext';
 import { formatDistanceMiles } from '../../lib/utils/formatters';
+import { AreaSalesPanel } from '../map/AreaSalesPanel';
 
 interface LocationSectionProps {
   summary: ComparisonSummary;
@@ -45,6 +46,7 @@ export const LocationSection: React.FC<LocationSectionProps> = ({ summary }) => 
 
   return (
     <div className="space-y-6">
+      <AreaSalesPanel key={newProperty.id} property={newProperty} />
       {/* 1. External Links Hub */}
       <div className="p-5 bg-white dark:bg-slate-850 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 shadow-sm text-xs">
         <div className="flex items-center space-x-2">

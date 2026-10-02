@@ -7,6 +7,8 @@ import { Property } from '../../types/property';
 import { homeName } from '../../lib/utils/homePresentation';
 import { searchUkAddresses } from '../../lib/services/addressLookup';
 import { formatCurrency } from '../../lib/utils/formatters';
+import { AreaSalesPanel, SalesOverlay } from './AreaSalesPanel';
+import { median } from '../../lib/services/nearbySales';
 
 type MapHome = { property: Property; current: boolean; latitude: number; longitude: number };
 const postcodePattern = /\b[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}\b/i;
@@ -26,13 +28,15 @@ interface HomesMapPageProps {
 }
 
 export const HomesMapPage: React.FC<HomesMapPageProps> = ({ onCompare }) => {
-  const { currentHouses, listings, updateCurrentHouse, updateListing } = useApp();
+  const { currentHouses, listings, activeListing, activeCurrentHouse, updateCurrentHouse, updateListing } = useApp();
+  const [salesOverlay, setSalesOverlay] = useState<SalesOverlay | null>(null);
   const [locating, setLocating] = useState(false);
   const [locateMessage, setLocateMessage] = useState('');
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const mapElement = useRef<HTMLDivElement>(null);
   const map = useRef<L.Map | null>(null);
   const markerLayer = useRef<L.LayerGroup | null>(null);
+  const salesLayer = useRef<L.LayerGroup | null>(null);
   const allHomes = useMemo(() => [
     ...currentHouses.map((property) => ({ property, current: true })),
     ...listings.map((property) => ({ property, current: false })),
@@ -52,8 +56,9 @@ export const HomesMapPage: React.FC<HomesMapPageProps> = ({ onCompare }) => {
       maxZoom: 19,
     }).addTo(instance);
     markerLayer.current = L.layerGroup().addTo(instance);
+    salesLayer.current = L.layerGroup().addTo(instance);
     map.current = instance;
-    return () => { instance.remove(); map.current = null; markerLayer.current = null; };
+    return () => { instance.remove(); map.current = null; markerLayer.current = null; salesLayer.current = null; };
   }, []);
 
   useEffect(() => {
@@ -68,13 +73,32 @@ export const HomesMapPage: React.FC<HomesMapPageProps> = ({ onCompare }) => {
         color: '#fff', weight: 2,
         fillColor: current ? '#0f766e' : '#d97706', fillOpacity: 1,
       });
-      marker.bindTooltip(homeName(property), { direction: 'top' });
+      const label = document.createElement('span');
+      label.textContent = homeName(property);
+      marker.bindTooltip(label, { direction: 'top' });
       marker.on('click', () => setSelectedId(property.id));
       marker.addTo(markerLayer.current!);
     });
     if (bounds.length === 1) map.current.setView(bounds[0], 13);
     else if (bounds.length > 1) map.current.fitBounds(L.latLngBounds(bounds), { padding: [35, 35], maxZoom: 13 });
   }, [currentHouses, listings]);
+
+  useEffect(() => {
+    if (!map.current || !salesLayer.current) return;
+    salesLayer.current.clearLayers();
+    if (!salesOverlay) return;
+    const { data, sales } = salesOverlay;
+    const centre: L.LatLngExpression = [data.centre.latitude, data.centre.longitude];
+    const searchCircle = L.circle(centre, { radius: data.radius, color: '#2563eb', weight: 1, dashArray: '5 5', fillOpacity: 0.03 }).addTo(salesLayer.current);
+    const groups = new Map<string, typeof sales>();
+    sales.forEach((sale) => groups.set(sale.postcode, [...(groups.get(sale.postcode) || []), sale]));
+    groups.forEach((group, postcode) => {
+      const label = document.createElement('div');
+      label.textContent = `${postcode}: ${group.length} completed sales · median ${formatCurrency(median(group.map((sale) => sale.price)) || 0)} · postcode centre`;
+      L.circleMarker([group[0].latitude, group[0].longitude], { radius: Math.min(14, 5 + Math.sqrt(group.length)), color: '#fff', weight: 1.5, fillColor: '#2563eb', fillOpacity: 0.8 }).bindTooltip(label).bindPopup(label.cloneNode(true) as HTMLElement).addTo(salesLayer.current!);
+    });
+    map.current.fitBounds(searchCircle.getBounds(), { padding: [20, 20], maxZoom: 16 });
+  }, [salesOverlay]);
 
   const locateHomes = async () => {
     setLocating(true);
@@ -113,7 +137,7 @@ export const HomesMapPage: React.FC<HomesMapPageProps> = ({ onCompare }) => {
       {unlocated.length > 0 && <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-950 dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-100">Locating sends saved postcodes, or addresses without a postcode, to postcodes.io or Photon. Opening the map loads OpenStreetMap tiles. Home details remain saved in this browser.</p>}
       {locateMessage && <p role="status" className="text-sm text-slate-700 dark:text-slate-200">{locateMessage}</p>}
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_18rem]">
-        <div ref={mapElement} role="region" aria-label={`Map with ${located.length} saved home locations`} className="h-[28rem] overflow-hidden rounded-xl border border-stone-200 bg-stone-100 dark:border-slate-700" />
+        <div ref={mapElement} role="region" aria-label={`Map with ${located.length} saved home locations${salesOverlay ? ` and ${salesOverlay.sales.length} nearby sales at postcode centres` : ''}`} className="relative z-0 h-[28rem] overflow-hidden rounded-xl border border-stone-200 bg-stone-100 dark:border-slate-700" />
         <div className="max-h-[28rem] space-y-2 overflow-y-auto" aria-label="Saved homes">
           {allHomes.map(({ property, current }) => {
             const isLocated = validCoordinates(property);
@@ -137,7 +161,8 @@ export const HomesMapPage: React.FC<HomesMapPageProps> = ({ onCompare }) => {
           {allHomes.length === 0 && <p className="rounded-xl border border-dashed border-stone-300 p-5 text-sm text-slate-600 dark:border-slate-700 dark:text-slate-300">Save a home to see it here.</p>}
         </div>
       </div>
-      <p className="text-xs text-slate-500 dark:text-slate-400">Map tiles © OpenStreetMap contributors. Marker positions are for orientation, not property boundaries.</p>
+      <p className="text-xs text-slate-500 dark:text-slate-400">Green: current homes · Amber: saved listings · Blue: completed sales grouped by postcode. Map tiles © OpenStreetMap contributors. Marker positions are for orientation, not property boundaries.</p>
+      <AreaSalesPanel property={activeListing || activeCurrentHouse} chooseHome onSalesChange={setSalesOverlay} onShowMap={() => mapElement.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })} />
     </section>
   );
 };

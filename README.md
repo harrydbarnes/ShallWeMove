@@ -3,13 +3,13 @@
 > **Evidence-based home comparison for UK households.**
 > Compare Rightmove and Zoopla listings against your current home. Check space, priorities, deal breakers, running costs, and English stamp duty (SDLT).
 
-Hosted statically on GitHub Pages with zero backend, zero database, and 100% client-side privacy.
+Hosted statically on GitHub Pages with browser-local saved homes and finances, and public external services for location and sold-price lookups.
 
 ---
 
 ## Key Highlights
 
-- **Pure Client-Side Privacy**: All listing data, financial numbers, and priorities stay in your browser’s `localStorage`. No data is ever stored remotely, and no third-party CORS proxies or web scrapers are used.
+- **Browser-Local Storage**: Listing data, financial numbers, and priorities are saved in your browser’s `localStorage`. Address suggestions and explicit sales lookups send location queries to public data services; map tiles load from OpenStreetMap. No third-party CORS proxies or web scrapers are used.
 - **Three Safe Input Routes**:
   1. **Bookmarklet**: Runs on an individual Rightmove or Zoopla for-sale listing. It copies listing data from the open tab for you to paste into the app.
   2. **Multi-Strategy Paste Box**: Accepts raw page HTML source, Rightmove `PAGE_MODEL` JSON, Zoopla bookmarklet JSON, or plain copied listing text with field-by-field extraction status (🟢 Found, 🟡 Inferred with evidence snippets, ⚪ Missing).
@@ -18,6 +18,7 @@ Hosted statically on GitHub Pages with zero backend, zero database, and 100% cli
 - **Priorities & Deal Breakers**: Set importance (`Deal breaker`, `Must have`, `Important`, `Nice to have`, `Don't care`). Listings that violate a deal breaker are immediately flagged in red.
 - **Named Homes & Map**: Give each saved listing a name, rename it in the shortlist, and compare two named homes. The Map view plots known coordinates and can locate missing pins using postcodes.io or Photon after you choose to do so; each home also has a Google Maps link. Pins are approximate.
 - **Data Confidence**: The verdict labels how complete the imported listing evidence is, and distinguishes samples and manual entries. It is not a prediction about the move or a property survey.
+- **Nearby Completed Sales**: In Map and Location, explicitly load HM Land Registry standard residential sales around an England or Wales postcode. Choose a 250m, 500m or 1km radius and 2 or 5 years. Filter by property type and new build, explore quarterly medians and volumes, and select quarters to filter sale records and map markers. Postcodes.io supplies up to 100 active nearby postcodes; the latest 2,000 sales are retained, with visible coverage warnings. Pins are postcode centres. The latest two months are incomplete; medians reflect the mix of homes sold, not a valuation or a house-price index. Results are cached in memory for an hour, with manual refresh.
 - **UK Property Specifics**:
   - English Stamp Duty Land Tax (SDLT) calculator (Moving Home, First-Time Buyer relief, Additional Property surcharge).
   - Dual metric/imperial area formatting (sq ft and sq m).
