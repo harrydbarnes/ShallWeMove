@@ -51,7 +51,7 @@ export function parseSaleBindings(bindings: Binding[], points: PostcodePoint[]):
     seen.add(id);
     return [{ id, postcode, price, date,
       address: [row.saon?.value, row.paon?.value, row.street?.value, row.town?.value, postcode].filter(Boolean).join(', '),
-      propertyType: row.type?.value?.split('/').pop() || 'other',
+      propertyType: (row.type?.value?.split('/').pop() || 'other').replace('flat-maisonette', 'flat'),
       newBuild: row.newBuild?.value === 'true',
       latitude: point.latitude, longitude: point.longitude, distance: point.distance,
     }];

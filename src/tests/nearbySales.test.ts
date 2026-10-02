@@ -31,6 +31,10 @@ describe('nearby completed sales', () => {
     expect(quarters[1]).toMatchObject({ median: null, count: 0, incomplete: false });
     expect(quarters[2].incomplete).toBe(true);
   });
+  it('classifies the official flat-maisonette code under the flat filter', () => {
+    const row = { ...binding('FLAT'), type: { value: 'http://landregistry.data.gov.uk/def/common/flat-maisonette' } };
+    expect(parseSaleBindings([row], [point])[0].propertyType).toBe('flat');
+  });
   it('queries bounded standard sales and reports coverage limits', async () => {
     const fetch = vi.fn()
       .mockResolvedValueOnce({ ok: true, json: async () => ({ result: point }) })
